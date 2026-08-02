@@ -5,7 +5,7 @@ import json
 
 # Nom du profil à activer.
 # Ce script est prévu pour être dupliqué ou appelé avec un nom de profil différent.
-PROFILE_NAME = "ProfileName"  # Remplacer par le nom du profil souhaité
+PROFILE_NAME = "Profil1"  # Remplacer par le nom du profil souhaité
 
 # Répertoire principal de Recalbox (stockage persistant)
 BASE_DIR = "/recalbox/share"

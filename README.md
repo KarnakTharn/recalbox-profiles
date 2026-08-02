@@ -55,7 +55,7 @@ Le fichier `recalbox/share/profiles/current_profile.json` contient le nom du pro
 
 ## Installation
 
-1. Copier le dossier `/recalbox/share/userscript` avec les scripts.
+1. Copier le dossier `/recalbox/share/userscripts` avec les scripts.
 2. Les dossiers `recalbox/share/profiles`, `recalbox/share/saves`, et `tmp` sont des exemples et présent pour les test.
 
 ## Utilisation

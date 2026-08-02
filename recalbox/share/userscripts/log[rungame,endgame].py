@@ -6,7 +6,7 @@ from datetime import datetime
 STATE_FILE = "/tmp/es_state.inf"
 
 # Fichier log où seront enregistrées les infos
-LOG_FILE = "/recalbox/share/profiles/es_state.log"
+LOG_FILE = "/recalbox/share/profiles/log_test.log"
 
 
 def read_state_file():
@@ -16,6 +16,7 @@ def read_state_file():
         Action=StartGame
         SystemId=snes
         Game=Super Mario World
+        GamePath: /recalbox/share/roms/snes/Super Mario World.zip
     """
     info = {}
 

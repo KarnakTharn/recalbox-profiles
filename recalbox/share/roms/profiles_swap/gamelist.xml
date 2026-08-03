@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<gameList>
+	<game source="Recalbox" timestamp="0">
+		<region>eu</region>
+		<genre>Beat'em All</genre>
+		<publisher>Karnak</publisher>
+		<developer>Tharn</developer>
+		<releasedate>19930423T000000</releasedate> 
+		<image>media/Guest.png</image>
+		<desc></desc>
+		<name>Guest</name>
+		<path>Guest.zip</path>
+	</game>
+	<game source="Recalbox" timestamp="0">
+		<region>fr</region>
+		<genre>Jeu de rôles</genre>
+		<publisher>Karnak</publisher>
+		<developer>Tharn</developer>
+		<releasedate>19930423T000000</releasedate> 
+		<image>media/Profil1.png</image>
+		<desc></desc>
+		<name>Profil1</name>
+		<path>Profil1.zip</path>
+	</game>
+</gameList>

@@ -144,6 +144,11 @@ def kill_game():
         print(f"Jeu en cours trouvé avec PID : {pid}")
         quit_retroarch(pid)
 
+# Changement visuel de sélection de profil dans EmulationStation
+## Changement de la region dans le fichier gamelist.xml ne fonctionne pas. Exemple region fr -> profil sélectionné et eu -> profil non sélectionné. CF archive_script/modif_xml.py
+## Changement du fichier image du profil. Exemple image en gris ou noir et blanc pour profil non sélectionné et image en couleur pour profil sélectionné.
+### Les 2 méthodes ci-dessus ne fonctionnent pas.
+
 
 def main():
     info = read_state_file()
@@ -177,7 +182,7 @@ def main():
         log_event("system", system_id, "ProfileSwap", profile_name)
 
     # Terminer le jeu (qui n'est qu'un sélecteur)
-    time.sleep(15)
+    time.sleep(10)  # Attendre un peu pour s'assurer que le jeu est bien lancé avant de le tuer
     kill_game()
 
 

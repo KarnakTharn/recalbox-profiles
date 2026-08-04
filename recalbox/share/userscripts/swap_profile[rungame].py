@@ -9,6 +9,8 @@ import os
 import json
 import subprocess
 from datetime import datetime
+import signal
+import time
 
 # Fichier généré par EmulationStation indiquant l'état (lancement/fin de jeu)
 STATE_FILE = "/tmp/es_state.inf"
@@ -104,15 +106,43 @@ def update_current_profile(profile_name):
         return False
 
 
+def find_retroarch_pid():
+    """
+    Retourne le PID du processus retroarch s'il existe,
+    sinon None.
+    """
+    try:
+        # pgrep retourne le PID directement
+        pid = subprocess.check_output(["pgrep", "retroarch"]).decode().strip()
+        return int(pid)
+    except subprocess.CalledProcessError:
+        # pgrep retourne un code d'erreur si rien n'est trouvé
+        return None
+
+def quit_retroarch(pid):
+    """
+    Envoie un signal SIGINT au processus RetroArch.
+    """
+    try:
+        os.kill(pid, signal.SIGINT)
+        print(f"Signal SIGINT envoyé au processus {pid}.")
+    except ProcessLookupError:
+        print("Le processus RetroArch n'existe plus.")
+    except PermissionError:
+        print("Permission refusée pour envoyer le signal.")
+
+
 def kill_game():
     """
     Termine le jeu en cours (puisque c'est juste un sélecteur de profil).
     """
-    try:
-        # Utiliser 'killall' ou 'pkill' pour terminer le processus du jeu
-        subprocess.run(["pkill", "-f", "retroarch"], timeout=5)
-    except Exception as e:
-        print(f"Erreur lors de la terminaison du jeu: {e}")
+    pid = find_retroarch_pid()
+
+    if pid is None:
+        print("Aucun jeu RetroArch en cours n'a été trouvé.")
+    else:
+        print(f"Jeu en cours trouvé avec PID : {pid}")
+        quit_retroarch(pid)
 
 
 def main():
@@ -145,10 +175,14 @@ def main():
         print(f"Profil changé en: {profile_name}")
         # Logger l'événement de changement de profil
         log_event("system", system_id, "ProfileSwap", profile_name)
-    
+
     # Terminer le jeu (qui n'est qu'un sélecteur)
+    time.sleep(15)
     kill_game()
 
 
 if __name__ == "__main__":
-    main()
+    try:
+        main()
+    except Exception as e:
+        print(f"Erreur lors de l'exécution du script: {e}")

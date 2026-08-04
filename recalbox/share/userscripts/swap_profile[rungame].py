@@ -182,7 +182,7 @@ def main():
         log_event("system", system_id, "ProfileSwap", profile_name)
 
     # Terminer le jeu (qui n'est qu'un sélecteur)
-    time.sleep(10)  # Attendre un peu pour s'assurer que le jeu est bien lancé avant de le tuer
+    time.sleep(5)  # Attendre un peu pour s'assurer que le jeu est bien lancé avant de le tuer
     kill_game()
 
 

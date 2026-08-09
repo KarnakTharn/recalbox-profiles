@@ -11,6 +11,9 @@ import subprocess
 from datetime import datetime
 import signal
 import time
+import xml.etree.ElementTree as ET
+from shutil import copy2
+import tempfile
 
 # Fichier généré par EmulationStation indiquant l'état (lancement/fin de jeu)
 STATE_FILE = "/tmp/es_state.inf"
@@ -23,6 +26,12 @@ PROFILES_DIR = "/recalbox/share/profiles"
 
 # Fichier de log unique
 LOG_FILE = "/recalbox/share/profiles/profiles.log"
+
+# Fichier gamelist.xml pour les profils
+GL_PATH = "/recalbox/share/roms/profiles/gamelist.xml"
+BACKUP_PATH = GL_PATH + ".bak"
+REGION_SELECTED = "fr"
+REGION_OTHER = "eu"
 
 
 def log_event(log_type, system_id, action, profile):
@@ -147,7 +156,81 @@ def kill_game():
 # Changement visuel de sélection de profil dans EmulationStation
 ## Changement de la region dans le fichier gamelist.xml ne fonctionne pas. Exemple region fr -> profil sélectionné et eu -> profil non sélectionné. CF archive_script/modif_xml.py
 ## Changement du fichier image du profil. Exemple image en gris ou noir et blanc pour profil non sélectionné et image en couleur pour profil sélectionné.
-### Les 2 méthodes ci-dessus ne fonctionnent pas.
+def update_gamelist_xml(profile_name):
+    """
+    Met à jour uniquement le tag <region> dans /recalbox/share/roms/profiles/gamelist.xml.
+    - profile_name : nom du profil à marquer en 'fr'
+    - les autres jeux auront 'eu'
+    Retourne True si OK, False sinon.
+    """
+
+    if not os.path.exists(GL_PATH):
+        print(f"[update_gamelist_region_only] gamelist introuvable: {GL_PATH}")
+        return False
+
+    try:
+        tree = ET.parse(GL_PATH)
+        root = tree.getroot()
+    except ET.ParseError as e:
+        print(f"[update_gamelist_region_only] erreur parse XML: {e}")
+        return False
+    except Exception as e:
+        print(f"[update_gamelist_region_only] erreur lecture: {e}")
+        return False
+
+    changed = False
+    for game in root.findall("game"):
+        name_el = game.find("name")
+        if name_el is None or not name_el.text:
+            continue
+        name = name_el.text.strip()
+        desired_region = REGION_SELECTED if name == profile_name else REGION_OTHER
+
+        region_el = game.find("region")
+        if region_el is None:
+            # insérer region avant image si possible, sinon à la fin du game
+            region_el = ET.Element("region")
+            image_el = game.find("image")
+            if image_el is not None:
+                idx = list(game).index(image_el)
+                game.insert(idx, region_el)
+            else:
+                game.append(region_el)
+            region_el.text = desired_region
+            changed = True
+        else:
+            current_region = (region_el.text or "").strip()
+            if current_region != desired_region:
+                region_el.text = desired_region
+                changed = True
+
+    if not changed:
+        print("[update_gamelist_region_only] aucune modification nécessaire")
+        return True
+
+    # backup et écriture atomique
+    try:
+        copy2(GL_PATH, BACKUP_PATH)
+    except Exception as e:
+        print(f"[update_gamelist_region_only] impossible de créer la sauvegarde: {e}")
+
+    try:
+        dirpath = os.path.dirname(GL_PATH)
+        fd, tmp_path = tempfile.mkstemp(dir=dirpath, prefix="gamelist.", suffix=".xml")
+        os.close(fd)
+        tree.write(tmp_path, encoding="utf-8", xml_declaration=True)
+        os.replace(tmp_path, GL_PATH)
+        print(f"[update_gamelist_region_only] gamelist mis à jour pour profil '{profile_name}'")
+        return True
+    except Exception as e:
+        print(f"[update_gamelist_region_only] erreur écriture: {e}")
+        # tentative de restauration depuis backup
+        try:
+            if os.path.exists(BACKUP_PATH):
+                copy2(BACKUP_PATH, GL_PATH)
+        except Exception:
+            pass
+        return False
 
 
 def main():
@@ -184,6 +267,12 @@ def main():
     # Terminer le jeu (qui n'est qu'un sélecteur)
     time.sleep(5)  # Attendre un peu pour s'assurer que le jeu est bien lancé avant de le tuer
     kill_game()
+
+    # Mettre à jour le fichier gamelist.xml pour refléter le changement de profil (optionnel)
+    ## Changement de la region dans le fichier gamelist.xml ne fonctionne pas. Exemple region fr -> profil sélectionné et eu -> profil non sélectionné. CF archive_script/modif_xml.py
+    ## Changement du fichier image du profil. Exemple image en gris ou noir et blanc pour profil non sélectionné et image en couleur pour profil sélectionné.
+    time.sleep(2)  # Attendre un peu pour s'assurer que le jeu est bien terminé avant de modifier le gamelist.xml
+    update_gamelist_xml(profile_name)
 
 
 if __name__ == "__main__":

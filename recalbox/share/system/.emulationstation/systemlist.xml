@@ -1469,7 +1469,7 @@
   </system>
   <!-- Profiles - system custom -->
   <system uuid="21b8873a-a93e-409c-ad0c-8bb6d682bef8" name="profiles" fullname="Profiles">
-    <descriptor path="%ROOT%/profiles_swap" theme="default" extensions=".smc .sfc .mgd .zip .7z"/>
+    <descriptor path="%ROOT%/profiles" theme="profiles" extensions=".smc .sfc .mgd .zip .7z"/>
     <scraper screenscraper=""/>
     <properties type="console" pad="mandatory" keyboard="no" mouse="optional" lightgun="optional" releasedate="1990-11" retroachievements="1"/>
     <emulatorList>

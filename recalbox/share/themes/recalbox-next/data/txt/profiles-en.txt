@@ -1,0 +1,5 @@
+Utility for managing backups based on a selected profile.
+
+It is not a platform or a game in itself.
+
+.............

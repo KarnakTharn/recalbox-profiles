@@ -1,41 +1,33 @@
-#!/usr/bin/env python3
-"""
-Script de chargement des saves au lancement d'un jeu
-Restaure les saves de l'utilisateur depuis le profil courant vers /recalbox/share/saves
-Événement : rungame
-"""
-
 import os
 import json
 import shutil
 from pathlib import Path
 from datetime import datetime
 
-# Fichier généré par EmulationStation indiquant l'état (lancement/fin de jeu)
+# Fichier généré par EmulationStation contenant les infos du jeu en cours
 STATE_FILE = "/tmp/es_state.inf"
 
-# Fichier du profil courant
+# Fichier indiquant quel profil est actuellement sélectionné
 CURRENT_PROFILE_FILE = "/recalbox/share/profiles/current_profile.json"
 
-# Dossiers des saves
+# Dossier global où Recalbox stocke les saves
 SHARES_SAVES_DIR = "/recalbox/share/saves"
 
-# Dossier des profils
+# Dossier contenant les profils et leurs saves
 PROFILES_DIR = "/recalbox/share/profiles"
 
-# Fichier de log unique
+# Fichier de log des actions du script
 LOG_FILE = "/recalbox/share/profiles/profiles.log"
 
 
 def log_event(log_type, system_id, action, profile):
     """
-    Log au format :
-    [system] - [YYYY-MM-DD HH:MM:SS] - profiles - ProfileSwap - nom_du_profil
+    Écrit une ligne dans le fichier de log.
+    Format :
+    [profil] | [YYYY-MM-DD HH:MM:SS] | system | action | game
     """
     os.makedirs(PROFILES_DIR, exist_ok=True)
-
     timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-
     log_entry = f"[{log_type}] | [{timestamp}] | {system_id} | {action} | {profile}"
 
     try:
@@ -47,7 +39,10 @@ def log_event(log_type, system_id, action, profile):
 
 def read_state_file():
     """
-    Lit le fichier es_state.inf et retourne un dictionnaire clé/valeur.
+    Lit /tmp/es_state.inf et retourne un dictionnaire contenant :
+    - SystemId
+    - GamePath
+    - etc.
     """
     info = {}
 
@@ -59,13 +54,13 @@ def read_state_file():
             if "=" in line:
                 key, value = line.strip().split("=", 1)
                 info[key] = value
-
     return info
 
 
 def read_current_profile():
     """
-    Lit le fichier current_profile.json et retourne le nom du profil.
+    Lit le fichier JSON du profil courant.
+    Retourne le nom du profil (ex : "Guest", "Player1").
     """
     if not os.path.exists(CURRENT_PROFILE_FILE):
         return None
@@ -81,101 +76,145 @@ def read_current_profile():
 
 def get_game_name_from_path(game_path):
     """
-    Extrait le nom du jeu depuis le chemin du fichier (sans extension).
-    Exemple: "/recalbox/share/roms/gba/Breath of Fire.zip" -> "Breath of Fire"
+    Extrait le nom du jeu depuis le chemin de la ROM.
+    Exemple :
+    /recalbox/share/roms/gba/Breath of Fire.zip → Breath of Fire
     """
     if not game_path:
         return None
-    
     filename = os.path.basename(game_path)
-    game_name = os.path.splitext(filename)[0]
-    return game_name
+    return os.path.splitext(filename)[0]
 
 
 def find_save_files(profile_name, system_id, game_name):
     """
-    Cherche les fichiers de saves du jeu dans le dossier du profil.
-    Exemple: /recalbox/share/profiles/Guest/gba/Breath of Fire.*
-    
-    Retourne une liste de chemins complets vers les fichiers de saves.
+    Cherche les saves du profil pour ce jeu :
+    /recalbox/share/profiles/<profil>/<system>/<jeu>.*
+
+    Retourne une liste de fichiers trouvés.
     """
     save_files = []
-    
     profile_game_dir = os.path.join(PROFILES_DIR, profile_name, system_id)
-    
+
     if not os.path.isdir(profile_game_dir):
         return save_files
-    
-    # Chercher tous les fichiers qui commencent par le nom du jeu
+
+    # On récupère tous les fichiers qui commencent par "<jeu>."
     for filename in os.listdir(profile_game_dir):
         if filename.startswith(game_name + "."):
             file_path = os.path.join(profile_game_dir, filename)
             if os.path.isfile(file_path):
                 save_files.append(file_path)
-    
+
     return save_files
 
 
-def restore_save_file(profile_save_path, system_id, game_name):
+def files_are_different(src, dst):
     """
-    Copie un fichier de save du profil vers le dossier share/saves.
+    Compare deux fichiers :
+    - Si dst n'existe pas → True (différent)
+    - Si tailles différentes → True
+    - Sinon comparaison binaire → True si contenu différent
     """
-    # Créer le répertoire cible s'il n'existe pas
+    if not os.path.exists(dst):
+        return True
+
+    if os.path.getsize(src) != os.path.getsize(dst):
+        return True
+
+    with open(src, "rb") as f1, open(dst, "rb") as f2:
+        return f1.read() != f2.read()
+
+
+def restore_save_file(profile_save_path, system_id):
+    """
+    Copie une save du profil vers /share/saves/<system>/,
+    mais uniquement si elle est différente.
+    """
     target_dir = os.path.join(SHARES_SAVES_DIR, system_id)
     os.makedirs(target_dir, exist_ok=True)
-    
-    # Récupérer le nom du fichier avec son extension
+
     filename = os.path.basename(profile_save_path)
-    
-    # Chemin cible
     target_path = os.path.join(target_dir, filename)
-    
+
     try:
-        shutil.copy2(profile_save_path, target_path)
-        print(f"Save restaurée: {filename}")
-        return True
+        # Copie uniquement si le fichier diffère
+        if files_are_different(profile_save_path, target_path):
+            shutil.copy2(profile_save_path, target_path)
+            print(f"Save copiée (différente) : {filename}")
+            return True
+        else:
+            print(f"Save identique, pas de copie : {filename}")
+            return False
+
     except Exception as e:
         print(f"Erreur lors de la restauration de {filename}: {e}")
         return False
 
 
+def delete_existing_saves(system_id, game_name):
+    """
+    Supprime les saves actuelles dans /share/saves/<system>/,
+    uniquement celles correspondant à ce jeu.
+    """
+    target_dir = os.path.join(SHARES_SAVES_DIR, system_id)
+
+    if not os.path.isdir(target_dir):
+        return
+
+    for filename in os.listdir(target_dir):
+        if filename.startswith(game_name + "."):
+            file_path = os.path.join(target_dir, filename)
+            try:
+                os.remove(file_path)
+                print(f"Save supprimée (profil sans save) : {filename}")
+            except Exception as e:
+                print(f"Erreur lors de la suppression de {filename}: {e}")
+
+
 def main():
-    # Ne pas traiter le système "profiles"
+    """
+    Fonction principale :
+    1. Lit l'état du jeu
+    2. Lit le profil courant
+    3. Détermine le nom du jeu
+    4. Synchronise les saves :
+       - copie si différentes
+       - supprime si aucune save dans le profil
+    5. Log l'événement
+    """
     info = read_state_file()
     system_id = info.get("SystemId", "").lower()
-    
+
+    # On ignore le système "profiles"
     if system_id == "profiles":
         return
-    
-    # Récupérer le profil courant
+
     profile_name = read_current_profile()
-    
     if not profile_name:
         print("Aucun profil courant défini")
         return
-    
-    # Récupérer les infos du jeu
+
     game_path = info.get("GamePath", "")
     game_name = get_game_name_from_path(game_path)
-    
     if not game_name:
         return
-    
-    # Chercher et restaurer les saves
-    save_files = find_save_files(profile_name, system_id, game_name)
-    
-    if not save_files:
-        # Pas de saves trouvées, c'est normal
-        pass
-    else:
-        print(f"Restauration des saves pour {game_name} ({system_id}) depuis profil {profile_name}")
-        
-        for save_file in save_files:
-            restore_save_file(save_file, system_id, game_name)
-    
-    # Logger l'événement de lancement du jeu
-    log_event(profile_name, system_id, "GameStart", game_name)
 
+    # Récupère les saves du profil
+    save_files = find_save_files(profile_name, system_id, game_name)
+
+    if not save_files:
+        # Aucun fichier → suppression des saves globales
+        print(f"Aucune save dans le profil → suppression des saves actuelles")
+        delete_existing_saves(system_id, game_name)
+    else:
+        # Copie des saves du profil vers /share/saves
+        print(f"Restauration des saves pour {game_name} ({system_id}) depuis profil {profile_name}")
+        for save_file in save_files:
+            restore_save_file(save_file, system_id)
+
+    # Log du lancement du jeu
+    log_event(profile_name, system_id, "GameStart", game_name)
 
 
 if __name__ == "__main__":

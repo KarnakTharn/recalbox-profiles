@@ -1,0 +1,158 @@
+<theme>
+	<view name="detailed">
+	    <textlist name="gamelist" 
+				 pos=".025 .2" 
+				 size=".31 .72" 
+				 fontPath="../../_assets/fonts/JosefinSans-Regular.ttf" 
+				 fontSize=".021" 
+				 alignment="left" 
+				 horizontalMargin=".01" 
+		/>
+	</view>
+    <view name="gamelistlogo">
+        <textlist name="gamelist" 
+				 pos=".025 .2" 
+				 size=".39 .715" 
+				 fontSize=".02" 
+				 alignment="left" 
+				 horizontalMargin=".01">
+            <fontSize if="vga | qvga">0.032</fontSize>
+		</textlist>
+	</view>
+   
+    <view name="detailed, gamelistlogo">
+		<extras>
+			<image name="consolegame" maxSize="0.4 0.15" origin="1 0">
+			    <pos if="!virtual | port"  value=".91 .03" />
+			    <pos if="virtual & !port"  value="2 2" />
+			</image>
+			<image name="console" pos="1 1" maxSize="0.01 0.01" origin="0 0" />
+            <image name="logoSystemGame" if="(virtual & !port)" showIf="game" maxSize="0.4 0.09" origin="1 0" pos=".91 .05" path="${game.system.logo}" zIndex="30"  />
+            <image name="logoSystemGame_SHADOW" if="(virtual & !port)" showIf="game" maxSize="0.4 0.09" origin="1 0"  pos=".911 .051" path="${game.system.logo}" color="000000" zIndex="20" />  
+            
+			<image name="logoSystem"  pos=".02 .03" maxSize="0.34 0.15" origin="0 0" path="${system.logo}"  path="${root}/data/arts/custom_logos/$system.png"/>
+			
+			<box name="backtext2" color="ffffff10" pos="0.02 0.19" size="0.32 0.735" origin="0 0" />		
+			<box name="backtext3" color="ffffff10" pos="0.60 0.19" size="0.38 0.735" origin="0 0"  showIf="game" />
+			<box name="backtext4" color="ffffff10" pos="0.345 0.19" size="0.25 0.735" origin="0 0" showIf="game" />
+			<box name="backtext5" color="ffffff10" pos="0.345 0.19" size="0.63 0.735" origin="0 0"  showIf="folder" />
+			<image name="controls" extra="false" pos="1 1" />		
+		    <text name="control" extra="false" />
+		    
+		    <image name="IconFav" if="!favorite"  pos="0.62 0.22" maxSize=".05 0.1" origin="0 0" zIndex="41" path="${root}/data/arts/iconfav-${game.isfavorite}.svg" color="ffffff" />
+			<image name="IconFavShadow" if="!favorite"  pos="0.622 0.225" maxSize=".05 0.1" origin="0 0" zIndex="40" path="${root}/data/arts/iconfav-${game.isfavorite}.svg" color="000000" />
+		</extras>
+		
+		<image name="md_image" zIndex="11">
+			<origin>.5 .5</origin>
+			<pos>.77 .42</pos>
+			<maxSize>.32 .438</maxSize>
+		</image>
+		
+		<video name="md_video" zIndex="12">
+			<origin>.5 .5</origin>
+			<pos>.77 .42</pos>
+			<maxSize>.32 .438</maxSize>
+			<link>md_image</link>
+		</video>
+		
+		
+		<image name="md_region1" pos=".77 .1" size="0.03 0.03" zIndex="55" />
+		<image name="md_region2" pos="0.74 0.200" size="0.03 0.03" />
+		<image name="md_region3" pos="0.71 0.200" size="0.03 0.03" />
+		<image name="md_region4" pos="0.68 0.200" size="0.03 0.03" />		
+    
+     <text name="md_folder_name" forceUppercase="1" fontPath="${PrimaryFont_Bold}" fontSize="0.03" size="0.4 0.023" pos="0.36 0.21" />
+		<image name="md_folder_image_0, md_folder_image_1, md_folder_image_2, md_folder_image_3, md_folder_image_4, md_folder_image_5, md_folder_image_6, md_folder_image_7, md_folder_image_8" origin="0.5 0.5" maxSize="0.12 0.2" />
+		<image name="md_folder_image_0" pos="0.44 0.37" />
+		<image name="md_folder_image_1" pos="0.60 0.37" />
+		<image name="md_folder_image_2" pos="0.74 0.37" />
+		<image name="md_folder_image_3" pos="0.44 0.58" />
+		<image name="md_folder_image_4" pos="0.60 0.58" />
+		<image name="md_folder_image_5" pos="0.74 0.58" />
+		<image name="md_folder_image_6" pos="0.44 0.79" />
+		<image name="md_folder_image_7" pos="0.60 0.79" />
+		<image name="md_folder_image_8" pos="0.74 0.79" />
+		
+		<extras>
+		    <markdown name="game_infos_MD" showIf="game"
+				zIndex="20" 
+				size=".19 .38" 
+                fontSize=".024"
+		        pos=".355 .202" 
+		        fontPath="${PrimaryFont_Regular}"
+                alignment="left"
+		    >
+			</markdown>
+			
+			<text name="game_name" showIf="game"
+                pos="0.61 0.66" 
+                size="0.465 0.05" 
+                alignment="topleft"
+                fontSize=".034"
+                fontPath="${PrimaryFont_Bold}"
+			    text="${game.name}" 
+			/>
+		</extras>
+		
+		<text name="md_description">
+			<lineSpacing>1.2</lineSpacing>
+			<pos>.61 .71</pos>
+			<size>.32 .20</size>
+		</text>
+		
+		<rating name="md_rating" pos=".54 .20" size="0.04 0.03" origin="1 0" />	
+		
+		<image name="controls" extra="true" showIf="game">
+			<zIndex>30</zIndex>
+			<pos>0.47 0.90</pos>
+			<maxSize>0.24 0.25</maxSize>
+			<origin>0.5 1</origin>
+		</image>
+		
+		
+<!-- TEXTES -->
+<markdown name="game_infos_MD" showIf="game">
+	<text>**DATE** : 
+	    ${game.releasedate}
+	**DEVELOPER** : 
+	    ${game.developer}
+	**PUBLISHER** : 
+        ${game.publisher}
+	**GENRE** : 
+        ${game.genre.normalized}
+
+	**PLAYERS** : ${game.players}
+	**LAST PLAYED** : ${game.lastplayed}				
+	</text>
+	
+	<text.fr>**SORTIE** : 
+	    *${game.releasedate}*
+	**DEVELOPPEUR** : 
+        ${game.developer}
+	**EDITEUR** : 
+        ${game.publisher}
+	**GENRE** : 
+	    ${game.genre.normalized}
+
+	**JOUEURS** : ${game.players}
+	**DERNIER JEU** : ${game.lastplayed}				
+	</text.fr>
+	
+	<text.es>**FECHA** : 
+        ${game.releasedate}
+	**DESARROLLADOR** : 
+        ${game.developer}
+	**EDITORIAL** : 
+        ${game.publisher}
+	**GÉNERO** : 
+        ${game.genre.normalized}
+
+	**JUGADORES** : ${game.players}
+	**ÚLTIMO JUEGO** : ${game.lastplayed}				
+	</text.es>
+</markdown>
+		
+		
+	</view>
+</theme>

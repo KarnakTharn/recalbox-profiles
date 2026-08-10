@@ -1,0 +1,5 @@
+Utilitaire pour la gestion des sauvegardes en fonction d'un profil sélectionné.
+
+Ce n'est pas une plateforme ni un jeu en lui même.
+
+.............

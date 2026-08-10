@@ -1,0 +1,95 @@
+<theme>
+
+	<view name="detailed">
+
+	     <textlist name="gamelist" 
+				 pos=".025 .2" 
+				 size=".88 .40" 
+				 fontPath="${root}/_assets/fonts/JosefinSans-Regular.ttf" 
+				 fontSize=".03" 
+				 alignment="left" 
+				 horizontalMargin=".01" 
+		 >
+            <fontSize if="vga | qvga">0.032</fontSize>
+		</textlist>
+
+        <extras>
+			<image name="consolegame"  pos=".91 .01" maxSize="0.4 0.15" origin="1 0" />
+			<image name="console" extra="true" pos="1 1" maxSize="0.01 0.01" origin="0 0" />
+			<image name="logoSystem"  pos=".02 .01" maxSize="0.34 0.15" origin="0 0" path="${system.logo}" path="${root}/data/arts/custom_logos/$system.png" />
+
+			<box name="backtext2"  color="ffffff10" pos="0.02 0.19" size="0.89 0.42" origin="0 0" />		
+			<box name="backtext3"  color="ffffff10" pos="0.02 0.62" size="0.89 0.34" origin="0 0" />
+			<box name="backtext4" extra="true" pos="1 1"  />
+			<image name="controls" extra="true" pos="1 1" />		
+		    <text name="control" extra="true" />
+
+			<box name="backgroundFolder" showIf="folder" color="00000000" zIndex="20" origin="0 0" pos="0.45 0.25" size="0.48 0.66" />
+		</extras>
+        
+        <image name="md_image" origin="0.5 0.5" pos="0.23 0.79" maxSize=".40 0.8" zIndex="11" />
+		<video name="md_video" origin="0.5 0.5" pos="0.23 0.79" maxSize=".40 0.8" zIndex="12" link="md_image" />
+        
+        <rating name="md_rating" pos=".45 .63" size="0.04 0.03" />
+		<extras>	
+		    <markdown name="game_infos" 
+				zIndex="20"
+				pos=".45 .68" 
+				size=".45 .38" 
+                fontSize=".024"
+                alignment="topleft"
+                fontPath="${PrimaryFont_Regular}"
+		    >
+		        <fontPath if="vga | qvga">${PrimaryFont_Regular}</fontPath>
+			</markdown>
+		</extras>
+		
+		<text name="md_description" lineSpacing="1.2" pos="0.45 0.81" size="0.46 0.14" />
+		
+		<image name="md_region1" pos="0.77 0.200" size="0.03 0.03" />
+		<image name="md_region2" pos="0.74 0.200" size="0.03 0.03" />
+		<image name="md_region3" pos="0.71 0.200" size="0.03 0.03" />
+		<image name="md_region4" pos="0.68 0.200" size="0.03 0.03" />
+		
+		<text name="md_folder_name" forceUppercase="1" fontPath="${PrimaryFont_Bold}" fontSize="0.03" size="0.4 0.023" pos="0.03 0.62" />
+		<image name="md_folder_image_0, md_folder_image_1, md_folder_image_2, md_folder_image_3, md_folder_image_4, md_folder_image_5, md_folder_image_6, md_folder_image_7, md_folder_image_8" origin="0 1" maxSize="0.27 0.10" />
+		<image name="md_folder_image_0" pos="0.03 0.745" />
+		<image name="md_folder_image_1" pos="0.33 0.745" />
+		<image name="md_folder_image_2" pos="0.63 0.745" />
+		<image name="md_folder_image_3" pos="0.03 0.85" />
+		<image name="md_folder_image_4" pos="0.33 0.85" />
+		<image name="md_folder_image_5" pos="0.63 0.85" />
+		<image name="md_folder_image_6" pos="0.03 0.955" />
+		<image name="md_folder_image_7" pos="0.33 0.955" />
+		<image name="md_folder_image_8" pos="0.63 0.955" />
+			
+		
+<!--- TEXTES --->
+<markdown name="game_infos" extra="true" showIf="game">
+	<text>*DATE* : ${game.releasedate}
+	*DEVELOPPER* : ${game.developer}
+	*PUBLISHER* : ${game.publisher}
+	*GENRE* : ${game.genre.normalized}
+	*PLAYERS* : ${game.players}
+	*LAST PLAYED* : ${game.lastplayed}			
+	</text>
+	<text.fr>*SORTIE* : ${game.releasedate}
+	*DEVELOPPEUR* : ${game.developer}
+	*EDITEUR* : ${game.publisher}
+	*GENRE* : ${game.genre.normalized}
+	*JOUEURS* : ${game.players}
+	*DERNIER JEU* : ${game.lastplayed}				
+	</text.fr>
+	<text.es>*FECHA DE LANZAMIENTO*: ${game.releasedate}
+	*DESARROLLADOR*: ${game.developer}
+	*EDITOR*: ${game.publisher}
+	*GÉNERO*: ${game.genre.normalized}
+	*JUGADORES*: ${game.players}
+	*ÚLTIMO JUEGO*: ${game.lastplayed}				
+	</text.es>
+</markdown>
+		
+    <helpsystem name="help" pos="0.01 .97" size="1 .05" />
+		
+	</view>
+</theme>

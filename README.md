@@ -48,7 +48,15 @@ recalbox/
 
 ## Configuration Recalbox
 
-### Custom system `profiles`
+### 1. Préparation du fichier systemlist.xml
+
+Le fichier `/recalbox/share/system/.emulationstation/systemlist.xml` n'existe pas par défaut. Il faut d'abord le copier depuis l'original :
+
+```bash
+cp -r /recalbox/share_init/system/.emulationstation/systemlist.xml /recalbox/share/system/.emulationstation
+```
+
+### 2. Ajout du custom system `profiles`
 
 Ajouter une entrée dans `/recalbox/share/system/.emulationstation/systemlist.xml` :
 
@@ -70,10 +78,39 @@ Ajouter une entrée dans `/recalbox/share/system/.emulationstation/systemlist.xm
   <!-- Profiles - system custom -->
 ```
 
-- Vérifier que l'UUID soit unique dans le `systemlist.xml`.
-- Le `theme` doit correspondre au théme disponible pour Recalbox Next (`profiles`).
+**Attention :**
+- Vérifier que l'UUID `21b8873a-a93e-409c-ad0c-8bb6d682bef8` soit unique dans le `systemlist.xml`.
+- Le `path` doit pointer vers `%ROOT%/profiles` (répertoire `recalbox/share/roms/profiles/`).
+- Le `theme` doit être `profiles` pour correspondre à la catégorie dans le thème.
+
+### 3. Création des ROMs de sélection de profil
+
+Dans le dossier `recalbox/share/roms/profiles/`, créer les fichiers suivants :
+- `Guest.zip` — ROM fictive pour sélectionner le profil `Guest`
+- `Profil1.zip` — ROM fictive pour sélectionner le profil `Profil1`
+
+Ces fichiers sont des archives ZIP vides (ou contenant un fichier vide) utilisées comme sélecteurs de profil. Étant invalides, EmulationStation retourne une erreur et revient à la sélection des jeux.
+
+### 4. Configuration du thème Recalbox Next
+
+Le système `profiles` doit s'afficher avec le thème Recalbox Next. Pour cela :
+- Vérifier que `recalbox/share/themes/recalbox-next/_views/_partials/systems/profiles.xml` existe.
+- S'assurer que les chemins et les assets du thème sont accessibles dans `recalbox/share/themes/recalbox-next/`.
+
+Le nom du système (`profiles`) doit correspondre au nom du fichier de thème (`profiles.xml`).
 
 ## Scripts principaux
+
+### Vue d'ensemble
+
+Le système `profiles` s'affiche comme un système normal dans EmulationStation avec sa propre section de thème :
+
+![Système Profiles dans EmulationStation](img-systems.png)
+
+Les sélecteurs de profil (`Guest.zip`, `Profil1.zip`) s'affichent comme des jeux dans la gamelist :  
+Profil sélectionné avec un drapreau France, les autres avec un drapeau Europe.
+
+![Gamelist du système Profiles](img-gameslist.jpg)
 
 ### `swap_profile[rungame].py`
 
@@ -147,7 +184,7 @@ Ajouter une entrée dans `/recalbox/share/system/.emulationstation/systemlist.xm
 ### Lancer un jeu
 
 - Au démarrage d'un jeu normal, `load_saves[rungame].py` restaure les saves du profil actif.
-- Si l'option de save state preview est activée, `load_saves[gamelistbrowsing].py` effectue le même chargement lors de la navigation.
+- Si l'option de **save state** preview est activée, `load_saves[gamelistbrowsing].py` effectue le même chargement lors de la navigation.
 
 ### Fin d'un jeu
 
@@ -161,6 +198,21 @@ Ajouter une entrée dans `/recalbox/share/system/.emulationstation/systemlist.xm
 [Guest] | [2026-08-11 12:05:00] | snes | GameStart | Super Mario World
 [Guest] | [2026-08-11 12:45:00] | snes | GameEnd | Super Mario World
 ```
+
+## Scripts manuels (optionnel)
+
+Le dossier `recalbox/share/userscripts/manual/` contient des scripts de synchronisation manuelle destinés à des cas d'usage spécifiques :
+
+- **`Guest(sync).py`** et **`Profil1(sync).py`** : Scripts pour charger manuellement un profil spécifique sans passer par EmulationStation. Utiles pour :
+  - Restaurer toutes les sauvegardes d'un profil en une seule exécution
+  - Initialiser un profil lors de la première installation (avant d'utiliser le système `profiles`)
+  - Dépannage ou test manuel
+
+- **`Save_profile(sync).py`** : Script pour sauvegarder manuellement les saves actuels dans le profil actif. Utiles pour :
+  - Forcer une synchronisation complète sans passer par le système d'événements
+  - Sauvegarder les saves indépendamment d'un événement `endgame`
+
+**Utilisation** : Ces scripts sont optionnels et ne sont pas nécessaires au fonctionnement normal du système. Ils ne s'exécutent que s'ils sont appelés manuellement par l'utilisateur (via SSH, cron, etc.).
 
 ## Remarques
 

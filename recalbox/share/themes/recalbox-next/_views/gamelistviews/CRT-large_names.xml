@@ -1,0 +1,126 @@
+<theme>
+
+	<view name="detailed">      
+        <textlist name="gamelist">
+            <fontPath>${PrimaryFont_CRT}</fontPath>
+			<pos>0.03 0.87</pos>
+			<size>0.88 0.40</size>
+			<origin>0 1</origin>
+			<alignment>left</alignment>
+			<horizontalMargin>0.010</horizontalMargin>
+			<forceUppercase>1</forceUppercase>
+			<lineSpacing>2</lineSpacing>
+		</textlist>
+
+        <extras>	
+			
+			<image name="logoSystem"  pos=".03 .18" maxSize="0.34 0.13" origin="0 1" if="qvga" 
+			        path="${system.logo}" 
+					path="${root}/data/arts/custom_logos/$system.png"
+			/>
+			<image name="logoSystem"  pos=".03 .18" maxSize="0.34 0.13" origin="0 1" if="vga"
+			        path="${system.logo}" 
+			        path="${root}/data/arts/systems_logos/$system.png"
+					path="${root}/data/arts/custom_logos/$system.png" 
+			        path.EU="${root}/data/arts/systems_logos/$system-eu.png"
+			        path.JP="${root}/data/arts/systems_logos/$system-jp.png"
+			        path.US="${root}/data/arts/systems_logos/$system-us.png" 
+			/>
+			
+            <box name="backtext2" color="ffffff10" pos="0.03 0.87" size="0.97 0.40" origin="0 1">
+		    </box>		
+			<box name="backtext3" color="ffffff10" pos="0.03 0.245" size="0.488 0.20" origin="0 0">
+				<pos if="jamma">0.0265 0.245</pos>
+				<size if="jamma">0.508 0.20</size>
+				<size if="tate">0.503 0.20</size>
+		    </box>
+			<box name="backtext4" color="ffffff10" pos="0.03 0.245" size="0.2 0.042" origin="0 1">
+			    <size if="tate">.4 .052</size>
+			</box>
+			<image name="controls" pos="1 1" />		
+		    <text name="control" />
+		    <image name="consolegame"  pos="1 1" maxSize="0.4 0.15" origin="1 0" />
+			<image name="console" pos="1 1" maxSize="0.01 0.01" origin="0 0" />
+
+			<box name="backgroundFolder"  color="00000000" zIndex="20" origin="0 1" pos="0.52 0.445" size="0.4 0.3" />
+			
+			<image name="IconFav" if="!favorite"  pos="0.54 0.06" maxSize=".05 0.1" origin="0 0" zIndex="41" path="${root}/data/arts/iconfav-${game.isfavorite}.svg" color="ffbf00" />
+			<image name="IconFavShadow" if="!favorite"  pos="0.543 0.07" maxSize=".05 0.1" origin="0 0" zIndex="40" path="${root}/data/arts/iconfav-${game.isfavorite}.svg" color="000000" />
+		</extras>
+	
+		
+		<image name="md_image" zIndex="10">
+			<pos>0.72 0.246</pos>
+			<pos if="tate">0.74 0.26</pos>
+			<maxSize>0.38 0.40</maxSize>
+			<maxSize if="tate">0.38 0.40</maxSize>
+			<origin>0.5 0.5</origin>
+		</image>
+
+		<video name="md_video" zIndex="11">
+			<pos>0.72 0.246</pos>
+			<pos if="tate">0.74 0.26</pos>
+			<maxSize>0.38 0.40</maxSize>
+			<maxSize if="tate">0.38 0.40</maxSize>
+			<origin>0.5 .5</origin>
+			<link>md_image</link>
+		</video>
+		
+		<text name="md_game_infos" extra="true" pos=".04 .2" size=".3 .05" origin="0 0" fontPath="${PrimaryFont_CRT}" fontSize="7" forceUppercase="1" zIndex="15">
+			<text>Game infos:</text>
+			<color>ffffff</color>
+			<pos if="tate">.04 .19</pos>
+		</text>
+		<text name="md_description">
+			<fontPath>${SecondaryFont_CRT}</fontPath>
+			<fontSize>6</fontSize>
+			<size>0.47 0.15</size>
+			<pos>0.04 0.27</pos>
+			<pos if="tate">.04 .29</pos>
+			<forceUppercase>0</forceUppercase>
+		</text>
+		<rating name="md_rating" pos=".45 .24" size=".04 .03" origin="1 1" >
+			<origin if="tate">0 0</origin>
+			<pos if="tate">.04 .26</pos>
+		</rating>
+		<text name="game_infos" extra="true" multiline="true" fontPath="${SecondaryFont_CRT}" fontSize="6" pos="0.04 0.27" size="0.47 0.16" showIf="game" lineSpacing="1.5">
+            <pos if="tate">0.04 0.29</pos>
+            <text>
+                ${game.developer}
+		        Date : ${game.releasedate}
+				Type : ${game.genre.normalized}
+				Players : ${game.players}
+		    </text>
+		    <text.fr>
+                ${game.developer}
+		        Sortie : ${game.releasedate}
+				Genre : ${game.genre.normalized}
+				Joueurs : ${game.players}
+		    </text.fr>
+		    <text.es>
+                ${game.developer}
+				Lanzamiento : ${game.releasedate}
+				Género : ${game.genre.normalized}
+				Jugadores : ${game.players}
+		    </text.es>
+		</text>
+		
+		<image name="md_region1" pos="0.77 0.200" size="0.03 0.03" />
+		<image name="md_region2" pos="0.74 0.200" size="0.03 0.03" />
+		<image name="md_region3" pos="0.71 0.200" size="0.03 0.03" />
+		<image name="md_region4" pos="0.68 0.200" size="0.03 0.03" />
+		
+		<text name="md_folder_name" forceUppercase="1" fontPath="${PrimaryFont_CRT}" color="ffffff" fontSize="0.03" size="0.4 0.05" pos="0.55 0.41" />
+		<image name="md_folder_image_0, md_folder_image_1, md_folder_image_2, md_folder_image_3, md_folder_image_4, md_folder_image_5, md_folder_image_6, md_folder_image_7, md_folder_image_8" origin="0.5 0.5" maxSize="0.15 0.2" />
+		<image name="md_folder_image_0" pos="0.65 0.1" />
+		<image name="md_folder_image_1" pos="0.85 0.1" />
+		<image name="md_folder_image_2" pos="2 2" />
+		<image name="md_folder_image_3" pos="0.65 0.32" />
+		<image name="md_folder_image_4" pos="0.85 0.32" />
+		<image name="md_folder_image_5" pos="2 2" />
+		<image name="md_folder_image_6" pos="2 2" />
+		<image name="md_folder_image_7" pos="2 2" />
+		<image name="md_folder_image_8" pos="2 2" />
+		
+	</view>
+</theme>

@@ -1,0 +1,147 @@
+<theme>
+	<view name="menu, system, detailed, gamelistlogo, gameclip">
+		<helpsystem name="help">
+			<fontPath>${root}/data/fonts/steelfishrg.ttf</fontPath>
+			<fontSize>0.035</fontSize>
+			<fontSize if="vga | qvga">0.045</fontSize>
+			<textColor>ffffff50</textColor>
+			<iconColor>ffffff50</iconColor>
+			<fontPath if="crt | jamma">${PrimaryFont_CRT}</fontPath>
+			<fontSize if="crt | jamma">7</fontSize>
+			<pos>0.01 0.945</pos>
+			<pos if="(qvga | vga) and !(crt | jamma)">0.01 .935</pos>
+			<pos if="jamma">0.03 0.945</pos>
+			<pos if="overscan">0.03 0.92</pos>
+		</helpsystem>
+	</view>
+	
+	<view name="system, detailed, gamelistlogo, gameclip">
+        <extras>	
+            <image name="consolegame" zIndex="40">
+                <path>${root}/data/arts/systems_assets/${system.name}-consolegame.svg</path>
+                <path.EU>${root}/data/arts/systems_assets/${system.name}-eu-consolegame.svg</path.EU>
+                <path.JP>${root}/data/arts/systems_assets/${system.name}-jp-consolegame.svg</path.JP>
+                <path.US>${root}/data/arts/systems_assets/${system.name}-us-consolegame.svg</path.US>
+            </image>
+            
+            <image name="overlayVideo" pos="0 0" origin="0 0" size="1 1" zIndex="10" tile="true" />
+            
+            <box name="band1, band2, band3, band4" />
+                      
+            <box name="BackG"  pos="0 0" origin="0 0" size="1 1" zIndex="1" color="2e447c" />
+            <box name="Shadow" pos="0 0" origin="0 0" size="1 .3" colorTop="00000080" colorBottom="00000000" />
+            <box name="Shadow2" pos="0 1" origin="0 1" size="1 .3"  colorTop="00000000" colorBottom="00000080"/>
+        </extras>
+	</view>
+    
+	<view name="detailed, gamelistlogo, gameclip">
+		<text name="no_image" extra="true" forceUppercase="1" fontPath="${PrimaryFont_Bold}" fontSize=".02" />
+		<text name="md_description" forceUppercase="0" fontPath="${PrimaryFont_Regular}" fontSize=".024" color="ffffff" />
+		<text name="game_infos, game_infos2, game_name" extra="true" color="ffffff" />
+		<markdown name="game_infos_MD" extra="true" color="ffffff" /> 
+	</view>
+	
+	<view name="detailed, gamelistlogo">
+	    <textlist name="gamelist" forceUppercase="1" fontPath="${PrimaryFont_Bold}" fontSize=".025" />
+		<image name="controls" extra="true">
+			<path>${root}/data/arts/systems_assets/${system.name}-controls.svg</path>
+		</image>	
+	</view>
+	
+	<view name="gameclip">
+	    <video name="md_video"  zIndex="1"></video>
+	    <image name="consolegame" pos="2 2" /> 
+	    
+	    <helpsystem name="help">
+			<textColor>ffffffff</textColor>
+			<iconColor>ffffffff</iconColor>
+		</helpsystem>
+	</view>
+    
+    <view name="system, detailed, gamelistlogo">
+        <sound name="directory">
+			<path>${root}/data/music</path>
+		</sound>
+    </view>
+	<view name="system">
+	    <image name="logo" if="crt"
+			    path="${system.logo}" 
+				path="${root}/data/arts/systems_logos/$system.png" 
+				path.EU="${root}/data/arts/systems_logos/$system-eu.png"
+				path.JP="${root}/data/arts/systems_logos/$system-jp.png"
+				path.US="${root}/data/arts/systems_logos/$system-us.png"
+		/>
+		
+		<image name="logo"
+			path="${system.logo}"
+			path="${root}/data/arts/custom_logos/$system.png"
+		/>
+       
+	    <text name="systemInfo" color="ffffff"  />
+        <extras>
+            <image name="consolegamecontroller" zIndex="40">
+                <path>${root}/data/arts/systems_assets/${system.name}-consolegamecontroller.svg</path>
+                <path.EU>${root}/data/arts/systems_assets/${system.name}-eu-consolegamecontroller.svg</path.EU>
+                <path.JP>${root}/data/arts/systems_assets/${system.name}-jp-consolegamecontroller.svg</path.JP>
+                <path.US>${root}/data/arts/systems_assets/${system.name}-us-consolegamecontroller.svg</path.US>
+            </image>
+            <image name="controller" zIndex="10">
+				<path>${root}/data/arts/systems_assets/${system.name}-controller.svg</path>
+				<path.EU>${root}/data/arts/systems_assets/${system.name}-eu-controller.svg</path.EU>
+				<path.JP>${root}/data/arts/systems_assets/${system.name}-jp-controller.svg</path.JP>
+				<path.US>${root}/data/arts/systems_assets/${system.name}-us-controller.svg</path.US>
+		    </image>  
+		</extras>
+	</view>
+   
+   <view name="menu">
+		<menuText name="menufooter">
+			<fontPath>${SecondaryFont_Italic}</fontPath>
+			<fontSize>0.025</fontSize>
+			<fontSize if="vga | qvga">0.035</fontSize>
+			<fontPath if="crt | jamma">${SecondaryFont_CRT}</fontPath>
+			<fontSize if="crt | jamma">6</fontSize>
+			<color>808080FF</color>
+		</menuText>
+		<menuText name="menutext">
+			<fontPath>${SecondaryFont_Regular}</fontPath>
+			<fontSize>0.035</fontSize>
+			<fontSize if="vga | qvga">0.045</fontSize>
+			<fontPath if="crt | jamma">${PrimaryFont_CRT}</fontPath>
+			<fontSize if="crt | jamma">7</fontSize>
+			<color>${PrimaryColor_BlueOld}</color>
+			<separatorColor>${PrimaryColor_BlueOld}</separatorColor>
+			<selectorColor>${PrimaryColor_Default}</selectorColor>
+			<selectedColor>FFFFFFCC</selectedColor>
+		</menuText>
+		<menuTextSmall name="menutextsmall">
+			<fontPath>${SecondaryFont_Regular}</fontPath>
+			<fontSize>0.028</fontSize>
+			<fontSize if="vga | qvga">0.04</fontSize>
+			<fontPath if="crt | jamma">${PrimaryFont_CRT}</fontPath>
+			<fontSize if="crt | jamma">7</fontSize>
+			<color>${PrimaryColor_Default}</color>
+		</menuTextSmall>
+		<menuText name="menutitle">
+			<fontPath>${PrimaryFont_Bold}</fontPath>
+			<fontSize>0.04</fontSize>
+			<fontSize if="vga | qvga">0.05</fontSize>
+			<fontPath if="crt | jamma">${PrimaryFont_CRT}</fontPath>
+			<fontSize if="crt | jamma">14</fontSize>
+			<color>${PrimaryColor_Default}</color>
+		</menuText>
+		<menuBackground name="menubg">
+			<color>F1F1F1CC</color>
+			<path>${root}/data/arts/borderframe.png</path>
+			<fadePath>${root}/data/arts/fade.png</fadePath>
+		</menuBackground>
+		
+		<helpsystem name="help">
+			<textColor>ffffffff</textColor>
+			<iconColor>ffffffff</iconColor>
+		</helpsystem>
+		
+	</view>
+    
+    
+</theme>

@@ -33,6 +33,9 @@ BACKUP_PATH = GL_PATH + ".bak"
 REGION_SELECTED = "fr"
 REGION_OTHER = "eu"
 
+# Fichier de configuration de Recalbox
+RECALBOX_CONF  = "/recalbox/share/system/recalbox.conf"
+
 
 def log_event(log_type, system_id, action, profile):
     """
@@ -232,6 +235,39 @@ def update_gamelist_xml(profile_name):
             pass
         return False
 
+def load_RA_config(profile_name):
+    """
+    Charge les valeurs RA depuis RA_config.json du profil.
+    """
+    ra_config_path = os.path.join(PROFILES_DIR, profile_name, "RA_config.json")
+
+    with open(ra_config_path) as f:
+        return json.load(f)
+
+def update_recalbox_conf(recalbox_conf, mapping):
+    """
+    Met à jour recalbox.conf avec les valeurs RA provenant de RA_config.json.
+    """
+    with open(recalbox_conf) as f:
+        lignes = f.readlines()
+
+    with open(recalbox_conf, "w") as f:
+        for ligne in lignes:
+            for cle, valeur in mapping.items():
+                if ligne.startswith(cle):
+                    ligne = f"{cle}{valeur}\n"
+                    break
+            f.write(ligne)
+
+
+def apply_RA_settings(profile_name):
+    """
+    Applique les paramètres RA du profil dans recalbox.conf.
+    """
+    mapping = load_RA_config(profile_name)
+    update_recalbox_conf(RECALBOX_CONF, mapping)
+    print(f"RetroAchievements mis à jour dans recalbox.conf pour le profil : {profile_name}")
+    
 
 def main():
     info = read_state_file()
@@ -272,6 +308,7 @@ def main():
     ## Changement de la region dans le fichier gamelist.xml ne fonctionne pas. Exemple region fr -> profil sélectionné et eu -> profil non sélectionné. CF archive_script/modif_xml.py
     ## Changement du fichier image du profil. Exemple image en gris ou noir et blanc pour profil non sélectionné et image en couleur pour profil sélectionné.
     time.sleep(2)  # Attendre un peu pour s'assurer que le jeu est bien terminé avant de modifier le gamelist.xml
+    apply_RA_settings(profile_name)
     update_gamelist_xml(profile_name)
 
 

@@ -1,17 +1,23 @@
 # recalbox-profiles  
-Gestion avancée des profils de sauvegarde pour Recalbox, avec sélection automatique de profil, restauration intelligente des saves et synchronisation optimisée.
+Gestion avancée des profils de sauvegarde pour Recalbox, avec sélection automatique de profil, restauration intelligente des saves, synchronisation optimisée et configuration indépendante des RetroAchievements.
 
 ![img-systems](img-systems.png)  
 ![img-gameslist](img-gameslist.jpg)  
 
 ---
 
-## 🎯 Objectif  
-Permettre l’utilisation de **plusieurs profils de sauvegarde indépendants** dans Recalbox :
+## 🎯 Objectif
 
-- Chaque profil possède ses propres saves.  
-- Le profil actif est sélectionné via un système custom dans EmulationStation.  
-- Les saves sont automatiquement restaurées au lancement d’un jeu et synchronisées à la fin.
+Ce projet permet d’utiliser **plusieurs profils indépendants** dans Recalbox, chacun possédant :
+
+- ses propres sauvegardes (`saves/`)  
+- sa propre configuration RetroAchievements (RA)  
+- son propre état de synchronisation  
+- son propre compte RA (username/password)  
+- son propre mode RA (normal / hardcore)
+
+Le profil actif est sélectionné via un système custom dans EmulationStation.  
+Les saves sont automatiquement restaurées au lancement d’un jeu et synchronisées à la fin.
 
 ---
 
@@ -24,10 +30,14 @@ recalbox/
       current_profile.json
       profiles.log
       .sync_manifest.json
+
       Guest/
+        RA_config.json
         megadrive/
           Aladdin.state
+
       Profil1/
+        RA_config.json
         gba/
           Breath of Fire.srm
 
@@ -57,8 +67,7 @@ recalbox/
 
 ## ⚙️ Configuration Recalbox
 
-### 1. Création du fichier systemlist.xml local  
-Le fichier n’existe pas par défaut. Il faut le copier :
+### 1. Création du fichier `systemlist.xml` local
 
 ```bash
 cp -r /recalbox/share_init/system/.emulationstation/systemlist.xml \
@@ -67,7 +76,7 @@ cp -r /recalbox/share_init/system/.emulationstation/systemlist.xml \
 
 ### 2. Ajout du système custom `profiles`
 
-Ajouter dans `/recalbox/share/system/.emulationstation/systemlist.xml` :
+Dans `/recalbox/share/system/.emulationstation/systemlist.xml` :
 
 ```xml
   <!-- Profiles - system custom -->
@@ -84,10 +93,11 @@ Ajouter dans `/recalbox/share/system/.emulationstation/systemlist.xml` :
   <!-- Profiles - system custom -->
 ```
 
-**Notes importantes :**
+**Notes :**
+
 - L’UUID doit être **unique**.  
-- Le `path` doit pointer vers `%ROOT%/profiles` (roms du système).  
-- Le `theme="profiles"` doit correspondre au fichier `profiles.xml` dans le thème.
+- Le `path` doit pointer vers `%ROOT%/profiles`.  
+- Le thème doit contenir un fichier `profiles.xml`.
 
 ---
 
@@ -95,31 +105,29 @@ Ajouter dans `/recalbox/share/system/.emulationstation/systemlist.xml` :
 
 Dans `recalbox/share/roms/profiles/` :
 
-- `Guest.zip`
-- `Profil1.zip`
+- `Guest.zip`  
+- `Profil1.zip`  
 - `gamelist.xml`
 
-Les `.zip` sont **vides** : ils servent uniquement de déclencheurs pour changer de profil.  
-EmulationStation les lance, RetroArch échoue → retour immédiat à la gamelist → profil changé.
+Les `.zip` sont **vides** : ils servent uniquement de déclencheurs pour changer de profil.
 
-> Conseil : Pour éviter les messages d'erreur, il est conseillé d'utiliser une rom de SNES authentique au format zip.
+> Pour éviter les messages d’erreur RetroArch, utiliser une ROM SNES valide dans le zip.
 
 ---
 
 ## 🎨 Intégration dans le thème Recalbox Next
 
-Deux méthodes :
-
 ### Option A — Copier le thème dans `share/themes`
+
 1. Copier `recalbox-next` depuis :  
    `/recalbox/share_init/system/.emulationstation/themes/`
 2. Le renommer (ex. `recalbox-next-profiles`)
-3. Ajouter le fichier `profiles.xml` dans `_systems/`
+3. Ajouter `profiles.xml` dans `_systems/`
 4. Modifier `theme.xml` pour inclure le système `profiles`
 
-### Option B — Modifier directement le thème d’origine  
-Nécessite un accès en écriture à la partition système.  
-Copier uniquement les fichiers nécessaires (`profiles.xml`, images, etc.).
+### Option B — Modifier le thème d’origine
+
+Nécessite un accès en écriture à la partition système.
 
 ---
 
@@ -133,64 +141,124 @@ Copier uniquement les fichiers nécessaires (`profiles.xml`, images, etc.).
 - Met à jour `current_profile.json`
 - Termine RetroArch pour revenir à EmulationStation
 - Log l’événement dans `profiles.log`
+- Met à jour la gamelist (`region` ou images)
+- **Applique automatiquement la configuration RetroAchievements du profil dans `recalbox.conf`**
+
+---
 
 ### `load_saves[rungame].py`  
 **Événement : `rungame`**
 
-- Lit le profil actif
-- Copie les saves du profil vers `share/saves/`
-- Ignore le système `profiles`
-- Log le début de jeu
+- Lit le profil actif  
+- Copie les saves du profil vers `share/saves/`  
+- Ignore le système `profiles`  
+- Log le début de jeu  
+
+---
 
 ### `load_saves[gamelistbrowsing].py`  
 **Événement : `gamelistbrowsing`**
 
-- Même logique que `load_saves[rungame].py`
-- Utilisé pour la prévisualisation des save states
+- Même logique que `load_saves[rungame].py`  
+- Utilisé pour la prévisualisation des save states  
+
+---
 
 ### `save_profile[endgame].py`  
 **Événement : `endgame`**
 
-- Lit le profil actif
-- Détecte les saves modifiées
-- Synchronise uniquement les fichiers modifiés
-- Met à jour `.sync_manifest.json`
-- Log la fin de jeu
+- Lit le profil actif  
+- Détecte les saves modifiées  
+- Synchronise uniquement les fichiers modifiés  
+- Met à jour `.sync_manifest.json`  
+- Log la fin de jeu  
+
+---
+
+## 🏆 Gestion automatique des RetroAchievements (RA)
+
+Chaque profil peut contenir un fichier :
+
+```
+/recalbox/share/profiles/<profil>/RA_config.json
+```
+
+Ce fichier définit les paramètres RA propres au profil :
+
+- `0` = désactivé  
+- `1` = activé  
+
+```json
+{
+    "global.retroachievements=": "1",
+    "global.retroachievements.hardcore=": "0",
+    "global.retroachievements.username=": "username_ra",
+    "global.retroachievements.password=": "password_ra"
+}
+```
+
+### ✔ Application automatique dans Recalbox
+
+Lorsqu’un profil est sélectionné :
+
+- Le script lit `RA_config.json`
+- Les valeurs sont appliquées automatiquement dans :
+
+```
+/recalbox/share/system/recalbox.conf
+```
+
+Les lignes suivantes sont mises à jour :
+
+```
+global.retroachievements=
+global.retroachievements.hardcore=
+global.retroachievements.username=
+global.retroachievements.password=
+```
+
+### ✔ Avantages
+
+- Comptes RA indépendants par profil  
+- Mode Hardcore configurable par profil  
+- Aucun besoin de modifier `recalbox.conf` manuellement  
+- `RA_config.json` reste la source unique des paramètres RA  
 
 ---
 
 ## 📌 Chemins clés
 
-- Profil actif : `share/profiles/current_profile.json`
-- Log : `share/profiles/profiles.log`
-- Manifest : `share/profiles/.sync_manifest.json`
-- ROMs de sélection : `share/roms/profiles/`
-- Gamelist du système : `share/roms/profiles/gamelist.xml`
+- Profil actif : `share/profiles/current_profile.json`  
+- Log : `share/profiles/profiles.log`  
+- Manifest : `share/profiles/.sync_manifest.json`  
+- ROMs de sélection : `share/roms/profiles/`  
+- Gamelist du système : `share/roms/profiles/gamelist.xml`  
+- Config Recalbox : `share/system/recalbox.conf`  
 
 ---
 
 ## 📥 Installation
 
-1. Copier les scripts dans `share/userscripts/`
-2. Ajouter le système `profiles` dans `systemlist.xml`
-3. Créer les dossiers de profils dans `share/profiles/`
-4. Créer les ROMs de sélection dans `share/roms/profiles/`
-5. Ajouter le fichier `profiles.xml` dans le thème
+1. Copier les scripts dans `share/userscripts/`  
+2. Ajouter le système `profiles` dans `systemlist.xml`  
+3. Créer les dossiers de profils dans `share/profiles/`  
+4. Créer les ROMs de sélection dans `share/roms/profiles/`  
+5. Ajouter `profiles.xml` dans le thème  
 
 ---
 
 ## 🕹️ Utilisation
 
 ### Changer de profil  
-- Lancer `Guest.zip` ou `Profil1.zip`
-- RetroArch se ferme automatiquement
-- EmulationStation recharge le profil actif
+- Lancer `Guest.zip` ou `Profil1.zip`  
+- RetroArch se ferme automatiquement  
+- EmulationStation recharge le profil actif  
 
 ### Lancer un jeu  
-- Les saves du profil actif sont restaurées automatiquement
+- Les saves du profil actif sont restaurées automatiquement  
 
 ### Fin d’un jeu  
-- Les saves modifiées sont synchronisées dans le profil actif
+- Les saves modifiées sont synchronisées dans le profil actif  
 
 ---
 
@@ -211,17 +279,17 @@ Dans `share/userscripts/manual/` :
 - `Guest(sync).py` / `Profil1(sync).py`  
   - Charger manuellement un profil  
   - Initialiser un profil  
-  - Dépannage
+  - Dépannage  
 
 - `Save_profile(sync).py`  
   - Sauvegarder manuellement les saves actuelles  
-  - Forcer une synchronisation complète
+  - Forcer une synchronisation complète  
 
 ---
 
 ## 🛡️ Remarques
 
-- Les scripts utilisent `/recalbox/share/` et `/tmp/es_state.inf`
-- Le système `profiles` doit être ignoré dans les scripts de save/load
-- `current_profile.json` doit exister et être valide
-- Vérifier les permissions d’écriture sur `share/profiles/` et `share/saves/`
+- Les scripts utilisent `/recalbox/share/` et `/tmp/es_state.inf`  
+- Le système `profiles` doit être ignoré dans les scripts de save/load  
+- `current_profile.json` doit exister et être valide  
+- Vérifier les permissions d’écriture sur `share/profiles/` et `share/saves/`  

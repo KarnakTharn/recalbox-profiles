@@ -330,10 +330,88 @@ Pendant une partie, `current_profile.json` contient temporairement `active_game`
 ## 📝 Exemple de log
 
 ```text
-[system] | [2026-08-11 12:00:00] | profiles | ProfileSwap | Guest
-[Guest]  | [2026-08-11 12:05:00] | snes     | GameStart   | Super Mario World
-[Guest]  | [2026-08-11 12:45:00] | snes     | GameEnd     | Super Mario World
+2026-09-01 14:20:15 [DEBUG] swap_profile_rungame: Détection du système 'profiles'
+2026-09-01 14:20:15 [DEBUG] swap_profile_rungame: Profil détecté : Guest
+2026-09-01 14:20:15 [INFO] swap_profile_rungame: Profil changé en: Guest
+2026-09-01 14:20:15 [DEBUG] swap_profile_rungame: RetroArch trouvé (PID: 1234)
+2026-09-01 14:20:15 [DEBUG] swap_profile_rungame: Signal SIGINT envoyé au processus 1234
+2026-09-01 14:20:17 [DEBUG] swap_profile_rungame: gamelist mis à jour pour profil 'Guest'
+2026-09-01 14:20:17 [INFO] swap_profile_rungame: RetroAchievements mis à jour dans recalbox.conf pour le profil : Guest
+2026-09-01 14:20:17 [INFO] swap_profile_rungame: Retrait de tous les favoris...
+2026-09-01 14:20:20 [INFO] swap_profile_rungame: Favoris retirés avec succès
+2026-09-01 14:20:20 [INFO] swap_profile_rungame: Application des favoris pour le profil 'Guest'...
+2026-09-01 14:20:25 [INFO] swap_profile_rungame: Favoris appliqués avec succès pour le profil 'Guest'
+2026-09-01 14:20:25 [INFO] swap_profile_rungame: EmulationStation redémarré avec succès
+2026-09-01 14:20:30 [INFO] load_saves_rungame: Profil 'Guest' chargé
+2026-09-01 14:20:30 [INFO] load_saves_rungame: Restauration des saves pour 'snes'...
+2026-09-01 14:20:31 [INFO] load_saves_rungame: Jeu lancé : Super Mario World (snes)
+2026-09-01 14:45:00 [INFO] game_stats_endgame: Session terminée pour Super Mario World
+2026-09-01 14:45:00 [INFO] game_stats_endgame: Temps de jeu : 1500 secondes (25 min)
+2026-09-01 14:45:00 [INFO] save_profile_endgame: Synchronisation des saves du profil 'Guest'
+2026-09-01 14:45:02 [INFO] save_profile_endgame: 1 fichier(s) modifié(s) synchronisé(s)
 ```
+
+---
+
+## 🎯 Gestion des Favoris par profil
+
+Chaque profil peut gérer ses propres favoris EmulationStation de manière indépendante.
+
+### Configuration
+
+La section `favorites` de `profile_config.json` active ou désactive le suivi :
+
+```json
+{
+  "favorites": {"enabled": 1}
+}
+```
+
+- `1` : gestion active des favoris pour ce profil
+- `0` : gestion désactivée, les favoris existants ne sont pas modifiés
+
+### Comportement lors du changement de profil
+
+#### ✅ `favorites.enabled = 1` (Actif)
+
+**Cas 1 : Fichier `favorites.json` présent**
+- Tous les favoris actuels sont retirés (nettoyage)
+- Les favoris du profil sont appliqués depuis `profiles/<profil>/favorites.json`
+- EmulationStation redémarre pour recharger la liste
+
+**Cas 2 : Fichier `favorites.json` absent**
+- Tous les favoris actuels sont retirés (réinitialisation)
+- Aucun nouveau favori n'est appliqué
+- EmulationStation redémarre
+
+#### ❌ `favorites.enabled = 0` (Inactif)
+
+- Aucune action n'est effectuée
+- Les favoris existants sont conservés
+- Pas de redémarrage d'EmulationStation
+- Utile pour les profils temporaires ou invité
+
+### Fichier `favorites.json`
+
+Le fichier `profiles/<profil>/favorites.json` contient la liste des favoris à appliquer :
+
+```json
+{
+  "snes": [
+    "Super Mario World",
+    "The Legend of Zelda: A Link to the Past"
+  ],
+  "megadrive": [
+    "Sonic The Hedgehog 2"
+  ]
+}
+```
+
+### Scripts associés
+
+- **Export** : `Favorites export(sync).py` — exporte les favoris actuels vers `favorites.json`
+- **Apply** : `swap_profile[rungame].py` — applique automatiquement les favoris lors du changement de profil
+- **Utility** : `recalbox_favorites.py` — utilitaire utilisé en arrière-plan (provient du projet [recalbox-rom-list-manager](https://github.com/jffella/recalbox-rom-list-manager) de jffella)
 
 ---
 
@@ -351,18 +429,11 @@ Dans `share/userscripts/manual/` :
   - Forcer une synchronisation complète  
 
 - `Favorites export(sync).py`
-  - Exporte les favoris EmulationStation du profil actif vers
+  - Exporte les   
+  C'est à vous d'appliquer ces changements dans le fichier. Les outils d'édition vous permettront de faire un copier/coller ou de modifier directement le fichier.C'est à vous d'appliquer ces changements dans le fichier. Les outils d'édition vous permettront de faire un copier/coller ou de modifier directement le fichier. EmulationStation du profil actif vers
     `profiles/<profil>/favorites.json`
   - L'export est effectué seulement lorsque `favorites.enabled` vaut `1`
 
-Lors d'un changement de profil, `swap_profile[rungame].py` charge aussi les
-favoris du profil lorsque `favorites.enabled` vaut `1` : il retire d'abord les
-favoris actifs, applique `favorites.json`, puis redémarre EmulationStation.
-Un profil dont les favoris sont désactivés ne déclenche pas cette opération.
-
-Le script `recalbox_favorites.py` utilisé pour cette gestion provient du projet
-[recalbox-rom-list-manager](https://github.com/jffella/recalbox-rom-list-manager)
-de jffella.
 
 ---
 

@@ -303,10 +303,11 @@ def apply_favorites_settings(profile_name):
         unmark_cmd = [
             "python3",
             script_path,
-            roms_path,
-            "unmark",
             "--log",
             "/recalbox/share/system/logs/recalbox_favorites.log",
+            roms_path,
+            "unmark",
+
         ]
         result = subprocess.run(unmark_cmd, capture_output=True, timeout=300)
         if result.returncode != 0:
@@ -320,11 +321,12 @@ def apply_favorites_settings(profile_name):
         apply_cmd = [
             "python3",
             script_path,
+            "--log",
+            "/recalbox/share/system/logs/recalbox_favorites.log",
             roms_path,
             "apply",
             favorites_json,
-            "--log",
-            "/recalbox/share/system/logs/recalbox_favorites.log",
+            
         ]
         result = subprocess.run(apply_cmd, capture_output=True, timeout=300)
         if result.returncode != 0:

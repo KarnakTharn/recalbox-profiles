@@ -331,10 +331,88 @@ While a game is running, `current_profile.json` temporarily contains `active_gam
 ## 📝 Example Log
 
 ```text
-[system] | [2026-08-11 12:00:00] | profiles | ProfileSwap | Guest
-[Guest]  | [2026-08-11 12:05:00] | snes     | GameStart   | Super Mario World
-[Guest]  | [2026-08-11 12:45:00] | snes     | GameEnd     | Super Mario World
+2026-09-01 14:20:15 [DEBUG] swap_profile_rungame: Detection of 'profiles' system
+2026-09-01 14:20:15 [DEBUG] swap_profile_rungame: Profile detected: Guest
+2026-09-01 14:20:15 [INFO] swap_profile_rungame: Profile changed to: Guest
+2026-09-01 14:20:15 [DEBUG] swap_profile_rungame: RetroArch found (PID: 1234)
+2026-09-01 14:20:15 [DEBUG] swap_profile_rungame: SIGINT signal sent to process 1234
+2026-09-01 14:20:17 [DEBUG] swap_profile_rungame: gamelist updated for profile 'Guest'
+2026-09-01 14:20:17 [INFO] swap_profile_rungame: RetroAchievements updated in recalbox.conf for profile: Guest
+2026-09-01 14:20:17 [INFO] swap_profile_rungame: Removing all favorites...
+2026-09-01 14:20:20 [INFO] swap_profile_rungame: Favorites removed successfully
+2026-09-01 14:20:20 [INFO] swap_profile_rungame: Applying favorites for profile 'Guest'...
+2026-09-01 14:20:25 [INFO] swap_profile_rungame: Favorites applied successfully for profile 'Guest'
+2026-09-01 14:20:25 [INFO] swap_profile_rungame: EmulationStation restarted successfully
+2026-09-01 14:20:30 [INFO] load_saves_rungame: Profile 'Guest' loaded
+2026-09-01 14:20:30 [INFO] load_saves_rungame: Restoring saves for 'snes'...
+2026-09-01 14:20:31 [INFO] load_saves_rungame: Game launched: Super Mario World (snes)
+2026-09-01 14:45:00 [INFO] game_stats_endgame: Session ended for Super Mario World
+2026-09-01 14:45:00 [INFO] game_stats_endgame: Play time: 1500 seconds (25 min)
+2026-09-01 14:45:00 [INFO] save_profile_endgame: Synchronizing saves for profile 'Guest'
+2026-09-01 14:45:02 [INFO] save_profile_endgame: 1 file(s) modified and synchronized
 ```
+
+---
+
+## 🎯 Per-profile Favorites Management
+
+Each profile can independently manage its own EmulationStation favorites.
+
+### Configuration
+
+The `favorites` section in `profile_config.json` enables or disables this feature:
+
+```json
+{
+  "favorites": {"enabled": 1}
+}
+```
+
+- `1`: favorites management is active for this profile
+- `0`: favorites management is disabled; existing favorites are not modified
+
+### Behavior when switching profiles
+
+#### ✅ `favorites.enabled = 1` (Active)
+
+**Case 1: `favorites.json` file is present**
+- All current favorites are removed (cleanup)
+- Profile favorites are applied from `profiles/<profile>/favorites.json`
+- EmulationStation restarts to reload the list
+
+**Case 2: `favorites.json` file is missing**
+- All current favorites are removed (reset)
+- No new favorites are applied
+- EmulationStation restarts
+
+#### ❌ `favorites.enabled = 0` (Inactive)
+
+- No action is taken
+- Existing favorites are preserved
+- No EmulationStation restart
+- Useful for temporary or guest profiles
+
+### `favorites.json` file
+
+The `profiles/<profile>/favorites.json` file contains the list of favorites to apply:
+
+```json
+{
+  "snes": [
+    "Super Mario World",
+    "The Legend of Zelda: A Link to the Past"
+  ],
+  "megadrive": [
+    "Sonic The Hedgehog 2"
+  ]
+}
+```
+
+### Associated scripts
+
+- **Export**: `Favorites export(sync).py` — exports current favorites to `favorites.json`
+- **Apply**: `swap_profile[rungame].py` — automatically applies favorites when switching profiles
+- **Utility**: `recalbox_favorites.py` — background utility (sourced from jffella's [recalbox-rom-list-manager](https://github.com/jffella/recalbox-rom-list-manager) project)
 
 ---
 
@@ -355,15 +433,6 @@ Inside `share/userscripts/manual/`:
   - Exports the active profile's EmulationStation favorites to
     `profiles/<profile>/favorites.json`
   - Export runs only when `favorites.enabled` is set to `1`
-
-When switching profiles, `swap_profile[rungame].py` also loads the profile's
-favorites when `favorites.enabled` is set to `1`: it first removes the active
-favorites, applies `favorites.json`, then restarts EmulationStation. A profile
-with favorites disabled does not trigger this operation.
-
-The `recalbox_favorites.py` script used for this feature originates from
-jffella's [recalbox-rom-list-manager](https://github.com/jffella/recalbox-rom-list-manager)
-project.
 
 ---
 

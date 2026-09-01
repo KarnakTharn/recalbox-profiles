@@ -102,11 +102,11 @@ def main():
         [
             "python3",
             FAVORITES_SCRIPT,
+            "--log",
+            "/recalbox/share/system/logs/recalbox_favorites.log",
             ROMS_DIR,
             "export",
             output_file,
-            "--log",
-            "/recalbox/share/system/logs/recalbox_favorites.log",
         ],
         check=True,
     )

@@ -35,7 +35,7 @@ def get_logger(log_name):
         logger.error("Impossible d'initialiser le fichier de log : %s", error)
 
     console_handler = logging.StreamHandler(sys.stdout)
-    console_handler.setLevel(logging.WARNING)
+    console_handler.setLevel(logging.INFO)
     console_handler.setFormatter(formatter)
     logger.addHandler(console_handler)
     return logger

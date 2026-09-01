@@ -278,6 +278,67 @@ def apply_RA_settings(profile_name):
     )
 
 
+def apply_favorites_settings(profile_name):
+    """
+    Si les favoris sont activés dans le profil, lance recalbox_favorites.py
+    pour unmark tous les favoris puis applique le fichier favorites.json du profil.
+    """
+    try:
+        profile_config = load_profile_config(profile_name)
+        favorites_config = profile_config.get("favorites", {})
+
+        if not favorites_config.get("enabled"):
+            print(f"Favoris désactivés pour le profil '{profile_name}'")
+            return
+
+        profile_path = os.path.join(PROFILES_DIR, profile_name)
+        favorites_json = os.path.join(profile_path, "favorites.json")
+
+        if not os.path.exists(favorites_json):
+            print(f"Fichier favorites.json non trouvé pour le profil '{profile_name}'")
+            return
+
+        # Répertoire ROMS de Recalbox
+        roms_path = "/recalbox/share/roms"
+
+        # Script recalbox_favorites.py
+        script_path = "/recalbox/share/userscripts/others/recalbox_favorites.py"
+
+        if not os.path.exists(script_path):
+            print(f"Script recalbox_favorites.py non trouvé: {script_path}")
+            return
+
+        # Étape 1: unmark tous les favoris
+        print(f"Retrait de tous les favoris...")
+        unmark_cmd = ["python3", script_path, roms_path, "unmark"]
+        result = subprocess.run(unmark_cmd, capture_output=True, timeout=300)
+        if result.returncode != 0:
+            print(f"Erreur lors du unmark: {result.stderr.decode()}")
+            return
+
+        print(f"Favoris retirés avec succès.")
+
+        # Étape 2: appliquer les favoris du profil
+        print(f"Application des favoris pour le profil '{profile_name}'...")
+        apply_cmd = ["python3", script_path, roms_path, "apply", favorites_json]
+        result = subprocess.run(apply_cmd, capture_output=True, timeout=300)
+        if result.returncode != 0:
+            print(f"Erreur lors de l'application des favoris: {result.stderr.decode()}")
+            return
+
+        print(f"Favoris appliqués avec succès pour le profil '{profile_name}'")
+
+    except Exception as e:
+        print(f"Erreur lors de la gestion des favoris: {e}")
+
+    # Redémarrer EmulationStation
+    try:
+        subprocess.run(["es", "restart"], timeout=30)
+        print("EmulationStation redémarré avec succès")
+    except Exception as e:
+        print(f"Erreur lors du redémarrage d'EmulationStation: {e}")
+
+
 def main():
     info = read_state_file()
 
@@ -323,6 +384,7 @@ def main():
     )  # Attendre un peu pour s'assurer que le jeu est bien terminé avant de modifier le gamelist.xml
     apply_RA_settings(profile_name)
     update_gamelist_xml(profile_name)
+    apply_favorites_settings(profile_name)
 
 
 if __name__ == "__main__":

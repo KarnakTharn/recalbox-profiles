@@ -211,6 +211,7 @@ This file defines the RA settings for that profile:
 ```json
 {
   "stats": {"enabled": 1},
+  "favorites": {"enabled": 1},
   "retroachievements": {
     "global.retroachievements=": "1",
     "global.retroachievements.hardcore=": "0",
@@ -349,6 +350,16 @@ Inside `share/userscripts/manual/`:
 - `Save_profile(sync).py`  
   - Manually save current files  
   - Force a full synchronization  
+
+- `Favorites export(sync).py`
+  - Exports the active profile's EmulationStation favorites to
+    `profiles/<profile>/favorites.json`
+  - Export runs only when `favorites.enabled` is set to `1`
+
+When switching profiles, `swap_profile[rungame].py` also loads the profile's
+favorites when `favorites.enabled` is set to `1`: it first removes the active
+favorites, applies `favorites.json`, then restarts EmulationStation. A profile
+with favorites disabled does not trigger this operation.
 
 ---
 

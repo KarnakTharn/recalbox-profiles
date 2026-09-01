@@ -81,153 +81,153 @@ _INI_FIELD_ORDER = ("timeplayed", "lastplayed", "playcount", "favorite")
 
 SYSTEM_DISPLAY_NAMES: dict[str, str] = {
     # --- Nintendo ---
-    "nes":           "Nintendo NES",
-    "fds":           "Famicom Disk System",
-    "snes":          "Super Nintendo",
-    "n64":           "Nintendo 64",
-    "gc":            "Nintendo GameCube",
-    "wii":           "Nintendo Wii",
-    "wiiu":          "Nintendo Wii U",
-    "switch":        "Nintendo Switch",
-    "gb":            "Game Boy",
-    "gbc":           "Game Boy Color",
-    "gba":           "Game Boy Advance",
-    "nds":           "Nintendo DS",
-    "3ds":           "Nintendo 3DS",
-    "virtualboy":    "Virtual Boy",
-    "pokemini":      "Pokemon Mini",
+    "nes": "Nintendo NES",
+    "fds": "Famicom Disk System",
+    "snes": "Super Nintendo",
+    "n64": "Nintendo 64",
+    "gc": "Nintendo GameCube",
+    "wii": "Nintendo Wii",
+    "wiiu": "Nintendo Wii U",
+    "switch": "Nintendo Switch",
+    "gb": "Game Boy",
+    "gbc": "Game Boy Color",
+    "gba": "Game Boy Advance",
+    "nds": "Nintendo DS",
+    "3ds": "Nintendo 3DS",
+    "virtualboy": "Virtual Boy",
+    "pokemini": "Pokemon Mini",
     # --- Sega ---
-    "mastersystem":  "Sega Master System",
-    "megadrive":     "Sega Mega Drive",
-    "segacd":        "Sega CD",
-    "sega32x":       "Sega 32X",
-    "saturn":        "Sega Saturn",
-    "dreamcast":     "Sega Dreamcast",
-    "gamegear":      "Sega Game Gear",
-    "sg1000":        "Sega SG-1000",
+    "mastersystem": "Sega Master System",
+    "megadrive": "Sega Mega Drive",
+    "segacd": "Sega CD",
+    "sega32x": "Sega 32X",
+    "saturn": "Sega Saturn",
+    "dreamcast": "Sega Dreamcast",
+    "gamegear": "Sega Game Gear",
+    "sg1000": "Sega SG-1000",
     # --- Sony ---
-    "psx":           "PlayStation",
-    "ps2":           "PlayStation 2",
-    "ps3":           "PlayStation 3",
-    "psp":           "PlayStation Portable",
-    "psvita":        "PlayStation Vita",
+    "psx": "PlayStation",
+    "ps2": "PlayStation 2",
+    "ps3": "PlayStation 3",
+    "psp": "PlayStation Portable",
+    "psvita": "PlayStation Vita",
     # --- Microsoft ---
-    "xbox":          "Xbox",
-    "xbox360":       "Xbox 360",
+    "xbox": "Xbox",
+    "xbox360": "Xbox 360",
     # --- NEC ---
-    "pcengine":      "PC Engine",
-    "pcenginecd":    "PC Engine CD",
-    "pc88":          "NEC PC-88",
-    "pc98":          "NEC PC-98",
+    "pcengine": "PC Engine",
+    "pcenginecd": "PC Engine CD",
+    "pc88": "NEC PC-88",
+    "pc98": "NEC PC-98",
     # --- SNK ---
-    "neogeo":        "Neo Geo",
-    "neogeocd":      "Neo Geo CD",
-    "ngp":           "Neo Geo Pocket",
-    "ngpc":          "Neo Geo Pocket Color",
+    "neogeo": "Neo Geo",
+    "neogeocd": "Neo Geo CD",
+    "ngp": "Neo Geo Pocket",
+    "ngpc": "Neo Geo Pocket Color",
     # --- Atari ---
-    "atari2600":     "Atari 2600",
-    "atari5200":     "Atari 5200",
-    "atari7800":     "Atari 7800",
-    "atarist":       "Atari ST",
-    "jaguar":        "Atari Jaguar",
-    "jaguarcd":      "Atari Jaguar CD",
-    "lynx":          "Atari Lynx",
+    "atari2600": "Atari 2600",
+    "atari5200": "Atari 5200",
+    "atari7800": "Atari 7800",
+    "atarist": "Atari ST",
+    "jaguar": "Atari Jaguar",
+    "jaguarcd": "Atari Jaguar CD",
+    "lynx": "Atari Lynx",
     # --- Amstrad / Sinclair / Commodore ---
-    "amstradcpc":    "Amstrad CPC",
-    "zxspectrum":    "ZX Spectrum",
-    "c64":           "Commodore 64",
-    "c128":          "Commodore 128",
-    "amiga":         "Amiga",
-    "amigacd32":     "Amiga CD32",
-    "vic20":         "Commodore VIC-20",
+    "amstradcpc": "Amstrad CPC",
+    "zxspectrum": "ZX Spectrum",
+    "c64": "Commodore 64",
+    "c128": "Commodore 128",
+    "amiga": "Amiga",
+    "amigacd32": "Amiga CD32",
+    "vic20": "Commodore VIC-20",
     # --- Arcade ---
-    "mame":          "MAME",
-    "fba":           "FinalBurn Alpha",
-    "fbneo":         "FinalBurn Neo",
-    "cave":          "Cave",
-    "naomi":         "Sega NAOMI",
-    "atomiswave":    "Atomiswave",
+    "mame": "MAME",
+    "fba": "FinalBurn Alpha",
+    "fbneo": "FinalBurn Neo",
+    "cave": "Cave",
+    "naomi": "Sega NAOMI",
+    "atomiswave": "Atomiswave",
     # --- Ordinateurs ---
-    "dos":           "DOS",
-    "scummvm":       "ScummVM",
-    "x68000":        "Sharp X68000",
-    "msx":           "MSX",
-    "msx2":          "MSX2",
-    "x1":            "Sharp X1",
-    "colecovision":  "ColecoVision",
+    "dos": "DOS",
+    "scummvm": "ScummVM",
+    "x68000": "Sharp X68000",
+    "msx": "MSX",
+    "msx2": "MSX2",
+    "x1": "Sharp X1",
+    "colecovision": "ColecoVision",
     "intellivision": "Intellivision",
-    "vectrex":       "Vectrex",
-    "o2em":          "Magnavox Odyssey 2",
-    "gw":            "Game & Watch",
-    "supervision":   "Watara Supervision",
-    "wonderswan":    "WonderSwan",
+    "vectrex": "Vectrex",
+    "o2em": "Magnavox Odyssey 2",
+    "gw": "Game & Watch",
+    "supervision": "Watara Supervision",
+    "wonderswan": "WonderSwan",
     "wonderswancolor": "WonderSwan Color",
     # --- Multi-systèmes / émulateurs génériques ---
-    "ports":         "Ports",
-    "imageviewer":   "Image Viewer",
-    "kodi":          "Kodi",
+    "ports": "Ports",
+    "imageviewer": "Image Viewer",
+    "kodi": "Kodi",
 }
 
 # Aliases supplémentaires : variantes orthographiques, noms régionaux,
 # abréviations courantes. Clés toujours en minuscules.
 EXTRA_ALIASES: dict[str, str] = {
-    "famicom":              "nes",
+    "famicom": "nes",
     "nintendo entertainment system": "nes",
-    "super nes":            "snes",
-    "super famicom":        "snes",
-    "super nintendo":       "snes",
+    "super nes": "snes",
+    "super famicom": "snes",
+    "super nintendo": "snes",
     "super nintendo entertainment system": "snes",
-    "nintendo64":           "n64",
-    "nintendo 64":          "n64",
-    "genesis":              "megadrive",
-    "sega genesis":         "megadrive",
-    "sega mega drive":      "megadrive",
-    "mega drive":           "megadrive",
-    "sms":                  "mastersystem",
-    "sega master system":   "mastersystem",
-    "mark iii":             "mastersystem",
-    "mega cd":              "segacd",
-    "mega-cd":              "segacd",
-    "sega saturn":          "saturn",
-    "sega dreamcast":       "dreamcast",
-    "sega game gear":       "gamegear",
-    "playstation":          "psx",
-    "ps1":                  "psx",
-    "psone":                "psx",
-    "playstation 1":        "psx",
-    "playstation 2":        "ps2",
+    "nintendo64": "n64",
+    "nintendo 64": "n64",
+    "genesis": "megadrive",
+    "sega genesis": "megadrive",
+    "sega mega drive": "megadrive",
+    "mega drive": "megadrive",
+    "sms": "mastersystem",
+    "sega master system": "mastersystem",
+    "mark iii": "mastersystem",
+    "mega cd": "segacd",
+    "mega-cd": "segacd",
+    "sega saturn": "saturn",
+    "sega dreamcast": "dreamcast",
+    "sega game gear": "gamegear",
+    "playstation": "psx",
+    "ps1": "psx",
+    "psone": "psx",
+    "playstation 1": "psx",
+    "playstation 2": "ps2",
     "playstation portable": "psp",
-    "turbografx":           "pcengine",
-    "turbografx-16":        "pcengine",
-    "tg16":                 "pcengine",
-    "pc engine cd":         "pcenginecd",
-    "turbo cd":             "pcenginecd",
-    "neo-geo":              "neogeo",
-    "neo geo aes":          "neogeo",
-    "neo geo mvs":          "neogeo",
-    "gameboy advance":      "gba",
-    "game boy advance":     "gba",
-    "gameboy color":        "gbc",
-    "game boy color":       "gbc",
-    "gameboy":              "gb",
-    "game boy":             "gb",
-    "nintendo ds":          "nds",
-    "nintendo 3ds":         "3ds",
-    "atari":                "atari2600",
-    "commodore amiga":      "amiga",
-    "spectrum":             "zxspectrum",
-    "sinclair spectrum":    "zxspectrum",
-    "cpc":                  "amstradcpc",
-    "amstrad":              "amstradcpc",
-    "commodore 64":         "c64",
-    "commodore64":          "c64",
-    "msx 2":                "msx2",
-    "finalburn alpha":      "fba",
-    "finalburn neo":        "fbneo",
-    "fb neo":               "fbneo",
-    "scumm":                "scummvm",
-    "ms-dos":               "dos",
-    "msdos":                "dos",
+    "turbografx": "pcengine",
+    "turbografx-16": "pcengine",
+    "tg16": "pcengine",
+    "pc engine cd": "pcenginecd",
+    "turbo cd": "pcenginecd",
+    "neo-geo": "neogeo",
+    "neo geo aes": "neogeo",
+    "neo geo mvs": "neogeo",
+    "gameboy advance": "gba",
+    "game boy advance": "gba",
+    "gameboy color": "gbc",
+    "game boy color": "gbc",
+    "gameboy": "gb",
+    "game boy": "gb",
+    "nintendo ds": "nds",
+    "nintendo 3ds": "3ds",
+    "atari": "atari2600",
+    "commodore amiga": "amiga",
+    "spectrum": "zxspectrum",
+    "sinclair spectrum": "zxspectrum",
+    "cpc": "amstradcpc",
+    "amstrad": "amstradcpc",
+    "commodore 64": "c64",
+    "commodore64": "c64",
+    "msx 2": "msx2",
+    "finalburn alpha": "fba",
+    "finalburn neo": "fbneo",
+    "fb neo": "fbneo",
+    "scumm": "scummvm",
+    "ms-dos": "dos",
+    "msdos": "dos",
 }
 
 # Index global alias → clé courte, généré une fois au chargement du module.
@@ -256,6 +256,7 @@ def system_key_from_label(label: str) -> Optional[str]:
 # Logging
 # ---------------------------------------------------------------------------
 
+
 def setup_logging(log_file: Path, verbose: bool) -> logging.Logger:
     logger = logging.getLogger()
     logger.setLevel(logging.DEBUG)
@@ -282,6 +283,7 @@ def setup_logging(log_file: Path, verbose: bool) -> logging.Logger:
 # Comparaison de noms
 # ---------------------------------------------------------------------------
 
+
 def normalize(name: str) -> str:
     """Retire les espaces en début/fin et met en minuscules."""
     return name.strip().lower()
@@ -300,6 +302,7 @@ def matches(game_name: str, query: str, threshold: float) -> bool:
 # ---------------------------------------------------------------------------
 # Lecture / écriture gamelist.xml
 # ---------------------------------------------------------------------------
+
 
 def parse_gamelist(xml_path: Path) -> Optional[ET.ElementTree]:
     """
@@ -371,6 +374,7 @@ def write_gamelist(tree: ET.ElementTree, xml_path: Path, dry_run: bool = False) 
 # ---------------------------------------------------------------------------
 # Gestion du fichier gamelist-userdata.ini (Recalbox v10)
 # ---------------------------------------------------------------------------
+
 
 def _userdata_path(xml_path: Path) -> Path:
     """Retourne le chemin du gamelist-userdata.ini voisin du gamelist.xml."""
@@ -458,6 +462,7 @@ def _write_userdata(
 # Collecte des gamelists
 # ---------------------------------------------------------------------------
 
+
 def find_gamelists(root: Path) -> list[Path]:
     """
     Parcourt récursivement root et retourne tous les gamelist.xml trouvés.
@@ -491,6 +496,7 @@ def _collect_gamelists(source: Path, force_v10: bool = False) -> list[Path]:
 # Export des favoris
 # ---------------------------------------------------------------------------
 
+
 def _collect_favorites(source: Path, force_v10: bool = False) -> list[dict]:
     """
     Parcourt tous les gamelists sous *source* et retourne les jeux favoris.
@@ -516,7 +522,8 @@ def _collect_favorites(source: Path, force_v10: bool = False) -> list[dict]:
         if force_v10:
             userdata = _read_userdata(_userdata_path(xml_path))
             fav_keys = {
-                k for k, v in userdata.items()
+                k
+                for k, v in userdata.items()
                 if v.get("favorite", "").lower() == "true"
             }
             for game in get_game_elements(tree):
@@ -545,7 +552,9 @@ def _collect_favorites(source: Path, force_v10: bool = False) -> list[dict]:
     return favorites
 
 
-def export_favorites(source: Path, out_json: Path, dry_run: bool = False, force_v10: bool = False) -> None:
+def export_favorites(
+    source: Path, out_json: Path, dry_run: bool = False, force_v10: bool = False
+) -> None:
     """
     Exporte tous les jeux favoris dans un fichier JSON.
 
@@ -555,8 +564,12 @@ def export_favorites(source: Path, out_json: Path, dry_run: bool = False, force_
     favorites = _collect_favorites(source, force_v10)
 
     if dry_run:
-        logging.info("[DRY-RUN] JSON NON écrit : %s (%d entrée(s))", out_json, len(favorites))
-        print(f"[DRY-RUN] {len(favorites)} favori(s) trouvé(s) — fichier NON écrit : {out_json}")
+        logging.info(
+            "[DRY-RUN] JSON NON écrit : %s (%d entrée(s))", out_json, len(favorites)
+        )
+        print(
+            f"[DRY-RUN] {len(favorites)} favori(s) trouvé(s) — fichier NON écrit : {out_json}"
+        )
         return
 
     out_json.write_text(
@@ -567,7 +580,9 @@ def export_favorites(source: Path, out_json: Path, dry_run: bool = False, force_
     print(f"✔  {len(favorites)} favori(s) exporté(s) → {out_json}")
 
 
-def export_favorites_text(source: Path, out_txt: Path, dry_run: bool = False, force_v10: bool = False) -> None:
+def export_favorites_text(
+    source: Path, out_txt: Path, dry_run: bool = False, force_v10: bool = False
+) -> None:
     """
     Exporte les favoris dans un fichier texte lisible, regroupés par système.
 
@@ -595,21 +610,31 @@ def export_favorites_text(source: Path, out_txt: Path, dry_run: bool = False, fo
     if dry_run:
         logging.info(
             "[DRY-RUN] TXT NON écrit : %s (%d système(s), %d entrée(s))",
-            out_txt, len(by_system), total,
+            out_txt,
+            len(by_system),
+            total,
         )
-        print(f"[DRY-RUN] {total} favori(s) dans {len(by_system)} système(s) — fichier NON écrit : {out_txt}")
+        print(
+            f"[DRY-RUN] {total} favori(s) dans {len(by_system)} système(s) — fichier NON écrit : {out_txt}"
+        )
         print("\n--- Aperçu ---")
         print(content)
         return
 
     out_txt.write_text(content, encoding="utf-8")
-    logging.info("%d favori(s) dans %d système(s) exporté(s) vers %s", total, len(by_system), out_txt)
+    logging.info(
+        "%d favori(s) dans %d système(s) exporté(s) vers %s",
+        total,
+        len(by_system),
+        out_txt,
+    )
     print(f"✔  {total} favori(s) / {len(by_system)} système(s) exporté(s) → {out_txt}")
 
 
 # ---------------------------------------------------------------------------
 # Application des favoris
 # ---------------------------------------------------------------------------
+
 
 def apply_favorites(
     source: Path,
@@ -696,13 +721,17 @@ def apply_favorites(
                 if ini not in ini_cache:
                     ini_cache[ini] = _read_userdata(ini)
                 if ini_cache[ini].get(rk, {}).get("favorite", "").lower() == "true":
-                    logging.debug("Déjà favori (v10) : [%s] %s", xml_path.parent.name, name_query)
+                    logging.debug(
+                        "Déjà favori (v10) : [%s] %s", xml_path.parent.name, name_query
+                    )
                     already_count += 1
                     continue
                 dirty_ini.setdefault(ini, set()).add(rk)
             else:
                 if _is_favorite(game_el):
-                    logging.debug("Déjà favori (v9) : [%s] %s", xml_path.parent.name, name_query)
+                    logging.debug(
+                        "Déjà favori (v9) : [%s] %s", xml_path.parent.name, name_query
+                    )
                     already_count += 1
                     continue
                 set_field(game_el, "favorite", "1")
@@ -723,7 +752,8 @@ def apply_favorites(
         if dry_run:
             logging.info(
                 "[DRY-RUN] gamelist-userdata.ini NON écrit : %s (%d entrée(s))",
-                ini_path, len(rom_keys),
+                ini_path,
+                len(rom_keys),
             )
             print(f"  [DRY-RUN] INI : {ini_path}  ({len(rom_keys)} favori(s))")
         else:
@@ -732,8 +762,17 @@ def apply_favorites(
 
     dry_tag = "[DRY-RUN] " if dry_run else ""
     verb = "seraient appliqués" if dry_run else "appliqué(s)"
-    logging.info("%s%d favori(s) %s, %d déjà présent(s), %d non trouvé(s)", dry_tag, found_count, verb, already_count, len(not_found))
-    print(f"\n{'[DRY-RUN] ' if dry_run else '✔  '}{found_count} favori(s) {verb}, {already_count} déjà présent(s), {len(not_found)} non trouvé(s)")
+    logging.info(
+        "%s%d favori(s) %s, %d déjà présent(s), %d non trouvé(s)",
+        dry_tag,
+        found_count,
+        verb,
+        already_count,
+        len(not_found),
+    )
+    print(
+        f"\n{'[DRY-RUN] ' if dry_run else '✔  '}{found_count} favori(s) {verb}, {already_count} déjà présent(s), {len(not_found)} non trouvé(s)"
+    )
     if not_found:
         print("Jeux non trouvés :")
         for sys_lbl, name in not_found:
@@ -826,7 +865,10 @@ def _ensure_loaded(xml_path: Path, trees: dict[Path, Optional[ET.ElementTree]]) 
 # Suppression de tous les favoris
 # ---------------------------------------------------------------------------
 
-def unmark_all_favorites(source: Path, dry_run: bool = False, force_v10: bool = False) -> None:
+
+def unmark_all_favorites(
+    source: Path, dry_run: bool = False, force_v10: bool = False
+) -> None:
     """
     Retire la marque favorite de tous les jeux trouvés sous source.
 
@@ -865,7 +907,9 @@ def unmark_all_favorites(source: Path, dry_run: bool = False, force_v10: bool = 
                 else ini_path.parent.name
             )
             if dry_run:
-                logging.info("[DRY-RUN] gamelist-userdata.ini NON modifié : %s", ini_path)
+                logging.info(
+                    "[DRY-RUN] gamelist-userdata.ini NON modifié : %s", ini_path
+                )
                 print(f"  [DRY-RUN] INI : {ini_path}")
             else:
                 if new_data:
@@ -878,7 +922,9 @@ def unmark_all_favorites(source: Path, dry_run: bool = False, force_v10: bool = 
 
         dry_tag = "[DRY-RUN] " if dry_run else ""
         verb = "seraient retirés" if dry_run else "retiré(s)"
-        logging.info("%s%d favori(s) %s dans gamelist-userdata.ini", dry_tag, total_removed, verb)
+        logging.info(
+            "%s%d favori(s) %s dans gamelist-userdata.ini", dry_tag, total_removed, verb
+        )
         print(f"\n{'[DRY-RUN] ' if dry_run else '✔  '}{total_removed} favori(s) {verb}")
         return
 
@@ -900,7 +946,11 @@ def unmark_all_favorites(source: Path, dry_run: bool = False, force_v10: bool = 
                 total += 1
                 logging.debug(
                     "Favori retiré : [%s] %s",
-                    xml_path.relative_to(source).parts[0] if source.is_dir() else xml_path.parent.name,
+                    (
+                        xml_path.relative_to(source).parts[0]
+                        if source.is_dir()
+                        else xml_path.parent.name
+                    ),
                     get_field(game, "name"),
                 )
 
@@ -909,13 +959,18 @@ def unmark_all_favorites(source: Path, dry_run: bool = False, force_v10: bool = 
 
     dry_tag = "[DRY-RUN] " if dry_run else ""
     verb = "seraient retirés" if dry_run else "retiré(s)"
-    logging.info("%s%d favori(s) %s dans %d fichier(s)", dry_tag, total, verb, len(dirty))
-    print(f"\n{'[DRY-RUN] ' if dry_run else '✔  '}{total} favori(s) {verb} ({len(dirty)} fichier(s) modifié(s))")
+    logging.info(
+        "%s%d favori(s) %s dans %d fichier(s)", dry_tag, total, verb, len(dirty)
+    )
+    print(
+        f"\n{'[DRY-RUN] ' if dry_run else '✔  '}{total} favori(s) {verb} ({len(dirty)} fichier(s) modifié(s))"
+    )
 
 
 # ---------------------------------------------------------------------------
 # Marquage depuis un fichier texte
 # ---------------------------------------------------------------------------
+
 
 def _parse_text_favorites(
     text_file: Path,
@@ -979,7 +1034,9 @@ def _parse_text_favorites(
 
             if gl_path is not None:
                 current_gamelist = str(gl_path)
-                logging.debug("Section système : [%s] → %s", resolved_key or label, gl_path)
+                logging.debug(
+                    "Section système : [%s] → %s", resolved_key or label, gl_path
+                )
             else:
                 current_gamelist = None
                 logging.warning(
@@ -991,13 +1048,15 @@ def _parse_text_favorites(
             logging.debug("Jeu ignoré (système introuvable) : %s", line)
             continue
 
-        entries.append({
-            "name": line,
-            "path": "",
-            "gamelist": current_gamelist,
-            "restrict": current_gamelist != "",
-            "match_rom": by_rom,
-        })
+        entries.append(
+            {
+                "name": line,
+                "path": "",
+                "gamelist": current_gamelist,
+                "restrict": current_gamelist != "",
+                "match_rom": by_rom,
+            }
+        )
 
     return entries
 
@@ -1022,7 +1081,9 @@ def mark_from_text(
         logging.error("Fichier texte introuvable : %s", text_file)
         sys.exit(1)
 
-    entries = _parse_text_favorites(text_file, source, by_rom=by_rom, force_v10=force_v10)
+    entries = _parse_text_favorites(
+        text_file, source, by_rom=by_rom, force_v10=force_v10
+    )
     mode_label = "ROM(s)" if by_rom else "nom(s) de jeux"
     logging.info("%d %s chargé(s) depuis %s", len(entries), mode_label, text_file)
 
@@ -1033,7 +1094,9 @@ def mark_from_text(
         tmp_path = Path(tmp.name)
 
     try:
-        apply_favorites(source, tmp_path, threshold, dry_run=dry_run, force_v10=force_v10)
+        apply_favorites(
+            source, tmp_path, threshold, dry_run=dry_run, force_v10=force_v10
+        )
     finally:
         os.unlink(tmp_path)
 
@@ -1041,6 +1104,7 @@ def mark_from_text(
 # ---------------------------------------------------------------------------
 # CLI
 # ---------------------------------------------------------------------------
+
 
 def build_parser() -> argparse.ArgumentParser:
     p = argparse.ArgumentParser(
@@ -1063,7 +1127,8 @@ def build_parser() -> argparse.ArgumentParser:
         help="Fichier de log (défaut: recalbox_favorites.log)",
     )
     p.add_argument(
-        "-v", "--verbose",
+        "-v",
+        "--verbose",
         action="store_true",
         help="Affiche les messages DEBUG dans la console",
     )
@@ -1078,7 +1143,8 @@ def build_parser() -> argparse.ArgumentParser:
         ),
     )
     p.add_argument(
-        "-n", "--dry-run",
+        "-n",
+        "--dry-run",
         action="store_true",
         dest="dry_run",
         help="Simule toutes les opérations sans écrire sur le disque.",
@@ -1099,13 +1165,17 @@ def build_parser() -> argparse.ArgumentParser:
     exp = sub.add_parser("export", help="Exporte les favoris vers un fichier JSON")
     exp.add_argument("output", type=Path, metavar="OUTPUT_JSON")
 
-    ext = sub.add_parser("export-text", help="Exporte les favoris vers un fichier texte")
+    ext = sub.add_parser(
+        "export-text", help="Exporte les favoris vers un fichier texte"
+    )
     ext.add_argument("output", type=Path, metavar="OUTPUT_TXT")
 
     apl = sub.add_parser("apply", help="Applique un fichier JSON de favoris")
     apl.add_argument("favorites_json", type=Path, metavar="FAVORITES_JSON")
 
-    mrk = sub.add_parser("mark", help="Marque comme favoris les jeux d'un fichier texte")
+    mrk = sub.add_parser(
+        "mark", help="Marque comme favoris les jeux d'un fichier texte"
+    )
     mrk.add_argument("text_file", type=Path, metavar="TEXT_FILE")
     mrk.add_argument(
         "--by-rom",
@@ -1148,16 +1218,33 @@ def main() -> None:
         print("⚙  Mode V9 (legacy) activé — gamelist.xml utilisé.\n")
 
     if args.command == "export":
-        export_favorites(args.source, args.output, dry_run=args.dry_run, force_v10=force_v10)
+        export_favorites(
+            args.source, args.output, dry_run=args.dry_run, force_v10=force_v10
+        )
 
     elif args.command == "export-text":
-        export_favorites_text(args.source, args.output, dry_run=args.dry_run, force_v10=force_v10)
+        export_favorites_text(
+            args.source, args.output, dry_run=args.dry_run, force_v10=force_v10
+        )
 
     elif args.command == "apply":
-        apply_favorites(args.source, args.favorites_json, threshold, dry_run=args.dry_run, force_v10=force_v10)
+        apply_favorites(
+            args.source,
+            args.favorites_json,
+            threshold,
+            dry_run=args.dry_run,
+            force_v10=force_v10,
+        )
 
     elif args.command == "mark":
-        mark_from_text(args.source, args.text_file, threshold, dry_run=args.dry_run, by_rom=args.by_rom, force_v10=force_v10)
+        mark_from_text(
+            args.source,
+            args.text_file,
+            threshold,
+            dry_run=args.dry_run,
+            by_rom=args.by_rom,
+            force_v10=force_v10,
+        )
 
     elif args.command == "unmark":
         if not args.dry_run:

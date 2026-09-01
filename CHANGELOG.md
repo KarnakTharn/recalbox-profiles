@@ -2,7 +2,7 @@
 
 Toutes les modifications importantes du projet sont documentées ici.
 
-## [2.1.0] - 2026-09-01
+## [2.2.0] - 2026-09-01
 
 ### Ajout
 - Suivi des statistiques de jeu par profil via `game_stats[rungame].py` et `game_stats[endgame].py`.
@@ -15,7 +15,7 @@ Toutes les modifications importantes du projet sont documentées ici.
 - Déplacement des paramètres RetroAchievements dans la section `retroachievements` de `profile_config.json`.
 - Mise à jour des README français et anglais pour documenter la configuration et les statistiques.
 
-## 2.1.0 - 2026-08-20
+## [2.1.0] - 2026-08-20
 
 
 ### Ajout

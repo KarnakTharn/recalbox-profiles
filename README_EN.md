@@ -1,4 +1,13 @@
-# recalbox-profiles  
+<!-- Badges -->
+[![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
+[![GitHub release](https://img.shields.io/github/v/release/KarnakTharn/recalbox-profiles)](https://github.com/KarnakTharn/recalbox-profiles/releases)
+![GitHub all releases](https://img.shields.io/github/downloads/KarnakTharn/recalbox-profiles/total)
+![GitHub issues](https://img.shields.io/github/issues/KarnakTharn/recalbox-profiles)
+![GitHub stars](https://img.shields.io/github/stars/KarnakTharn/recalbox-profiles)
+![GitHub commit activity](https://img.shields.io/github/commit-activity/m/KarnakTharn/recalbox-profiles)
+
+
+# Recalbox Profiles  
 Advanced multi‑profile save management for Recalbox, featuring automatic profile switching, intelligent save restoration, optimized synchronization, and per‑profile RetroAchievements configuration.
 
 ![img-systems](img-systems.png)  
@@ -349,3 +358,5 @@ Inside `share/userscripts/manual/`:
 - The `profiles` system must be ignored by save/load scripts  
 - `current_profile.json` must exist and be valid  
 - Ensure write permissions on `share/profiles/` and `share/saves/`
+
+License: GPLv3

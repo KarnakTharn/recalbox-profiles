@@ -9,7 +9,7 @@ import json
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 from others.recalbox_logging import get_logger
 
-LOGGER = get_logger("profile_manual")
+LOGGER = get_logger("recalbox_profiles_manual")
 
 
 # Nom du profil à activer.

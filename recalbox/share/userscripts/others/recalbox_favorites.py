@@ -1247,17 +1247,17 @@ def main() -> None:
         )
 
     elif args.command == "unmark":
-        if not args.dry_run:
-            try:
-                answer = input(
-                    "⚠  Cette opération va retirer TOUS les favoris sous "
-                    f"{args.source}.\n   Confirmer ? [o/N] "
-                )
-            except EOFError:
-                answer = ""
-            if answer.strip().lower() not in ("o", "oui", "y", "yes"):
-                print("Annulé.")
-                return
+        # if not args.dry_run:
+        #     try:
+        #         answer = input(
+        #             "⚠  Cette opération va retirer TOUS les favoris sous "
+        #             f"{args.source}.\n   Confirmer ? [o/N] "
+        #         )
+        #     except EOFError:
+        #         answer = ""
+        #     if answer.strip().lower() not in ("o", "oui", "y", "yes"):
+        #         print("Annulé.")
+        #         return
         unmark_all_favorites(args.source, dry_run=args.dry_run, force_v10=force_v10)
 
     logging.info("=== terminé ===")

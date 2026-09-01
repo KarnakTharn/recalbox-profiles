@@ -12,7 +12,7 @@ from pathlib import Path
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from others.recalbox_logging import get_logger
 
-LOGGER = get_logger("load_saves_rungame")
+LOGGER = get_logger("recalbox_profiles")
 
 
 # Fichier généré par EmulationStation contenant les infos du jeu en cours

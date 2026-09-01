@@ -18,7 +18,7 @@ import tempfile
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from others.recalbox_logging import get_logger
 
-LOGGER = get_logger("swap_profile_rungame")
+LOGGER = get_logger("recalbox_profiles")
 
 # Fichier généré par EmulationStation indiquant l'état (lancement/fin de jeu)
 STATE_FILE = "/tmp/es_state.inf"
@@ -304,7 +304,7 @@ def apply_favorites_settings(profile_name):
             "python3",
             script_path,
             "--log",
-            "/recalbox/share/system/logs/recalbox_favorites.log",
+            "/recalbox/share/system/logs/recalbox_profiles.log",
             roms_path,
             "unmark",
         ]
@@ -321,7 +321,7 @@ def apply_favorites_settings(profile_name):
             "python3",
             script_path,
             "--log",
-            "/recalbox/share/system/logs/recalbox_favorites.log",
+            "/recalbox/share/system/logs/recalbox_profiles.log",
             roms_path,
             "apply",
             favorites_json,

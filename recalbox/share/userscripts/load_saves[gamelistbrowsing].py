@@ -24,7 +24,7 @@ SHARES_SAVES_DIR = "/recalbox/share/saves"
 # Dossier contenant les profils et leurs saves
 PROFILES_DIR = "/recalbox/share/profiles"
 
-LOGGER = get_logger("load_saves_gamelistbrowsing")
+LOGGER = get_logger("recalbox_profiles")
 
 
 def read_state_file():

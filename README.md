@@ -374,12 +374,12 @@ La section `favorites` de `profile_config.json` active ou désactive le suivi :
 
 #### ✅ `favorites.enabled = 1` (Actif)
 
-**Cas 1 : Fichier `favorites.json` présent**
+**Cas 1 : Fichier `favorites.json` n'est pas vide (Profil1)**
 - Tous les favoris actuels sont retirés (nettoyage)
 - Les favoris du profil sont appliqués depuis `profiles/<profil>/favorites.json`
 - EmulationStation redémarre pour recharger la liste
 
-**Cas 2 : Fichier `favorites.json` absent**
+**Cas 2 : Fichier `favorites.json` est vide (Guest)**
 - Tous les favoris actuels sont retirés (réinitialisation)
 - Aucun nouveau favori n'est appliqué
 - EmulationStation redémarre

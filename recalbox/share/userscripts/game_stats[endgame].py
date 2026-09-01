@@ -18,7 +18,7 @@ CURRENT_PROFILE_FILE = "/recalbox/share/profiles/current_profile.json"
 PROFILES_DIR = "/recalbox/share/profiles"
 STATS_FILE_NAME = "game_time.json"
 PROFILE_CONFIG_FILE_NAME = "profile_config.json"
-LOGGER = get_logger("game_stats_endgame")
+LOGGER = get_logger("recalbox_profiles")
 
 
 def read_json(path, default):

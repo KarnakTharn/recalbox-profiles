@@ -14,7 +14,7 @@ from datetime import datetime
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from others.recalbox_logging import get_logger
 
-LOGGER = get_logger("game_stats_rungame")
+LOGGER = get_logger("recalbox_profiles")
 
 
 STATE_FILE = "/tmp/es_state.inf"

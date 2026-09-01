@@ -12,7 +12,7 @@ import json
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 from others.recalbox_logging import get_logger
 
-LOGGER = get_logger("save_profile_manual")
+LOGGER = get_logger("recalbox_profiles_manual")
 
 # Répertoire principal de Recalbox (partage réseau / stockage persistant)
 BASE_DIR = "/recalbox/share"

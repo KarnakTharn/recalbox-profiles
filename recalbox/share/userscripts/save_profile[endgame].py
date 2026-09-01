@@ -15,7 +15,7 @@ from pathlib import Path
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from others.recalbox_logging import get_logger
 
-LOGGER = get_logger("save_profile_endgame")
+LOGGER = get_logger("recalbox_profiles")
 
 # Fichier généré par EmulationStation indiquant l'état (fin de jeu)
 STATE_FILE = "/tmp/es_state.inf"

@@ -375,12 +375,12 @@ The `favorites` section in `profile_config.json` enables or disables this featur
 
 #### ✅ `favorites.enabled = 1` (Active)
 
-**Case 1: `favorites.json` file is present**
+**Case 1: `favorites.json` file is not empty (Profil1)**
 - All current favorites are removed (cleanup)
 - Profile favorites are applied from `profiles/<profile>/favorites.json`
 - EmulationStation restarts to reload the list
 
-**Case 2: `favorites.json` file is missing**
+**Case 2: `favorites.json` file is empty (Guest)**
 - All current favorites are removed (reset)
 - No new favorites are applied
 - EmulationStation restarts

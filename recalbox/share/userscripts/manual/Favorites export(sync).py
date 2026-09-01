@@ -24,7 +24,7 @@ PROFILE_CONFIG_FILE_NAME = "profile_config.json"
 FAVORITES_SCRIPT = "/recalbox/share/userscripts/others/recalbox_favorites.py"
 ROMS_DIR = "/recalbox/share/roms"
 
-LOGGER = get_logger("favorites_export")
+LOGGER = get_logger("recalbox_profiles_manual")
 
 
 def profile_exists(profile_name):
@@ -103,7 +103,7 @@ def main():
             "python3",
             FAVORITES_SCRIPT,
             "--log",
-            "/recalbox/share/system/logs/recalbox_favorites.log",
+            "/recalbox/share/system/logs/recalbox_profiles_manual.log",
             ROMS_DIR,
             "export",
             output_file,

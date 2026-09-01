@@ -18,6 +18,7 @@ PROFILE_CONFIG_FILE_NAME = "profile_config.json"
 
 
 def read_state_file():
+    """Retourne les clés/valeurs fournies par EmulationStation pour le jeu lancé."""
     info = {}
     if not os.path.exists(STATE_FILE):
         return info
@@ -31,6 +32,7 @@ def read_state_file():
 
 
 def read_json(path, default):
+    """Lit un JSON ou renvoie ``default`` si le fichier est absent ou invalide."""
     if not os.path.exists(path):
         return default
     try:
@@ -42,6 +44,7 @@ def read_json(path, default):
 
 
 def write_json_atomic(path, data):
+    """Écrit un JSON via un fichier temporaire pour éviter un fichier partiel."""
     directory = os.path.dirname(path)
     os.makedirs(directory, exist_ok=True)
     file_descriptor, temporary_path = tempfile.mkstemp(dir=directory, prefix=".tmp_")
@@ -61,18 +64,21 @@ def write_json_atomic(path, data):
 
 
 def get_game_name(game_path):
+    """Extrait le nom de jeu du chemin de ROM, sans son extension."""
     if not game_path:
         return None
     return os.path.splitext(os.path.basename(game_path))[0]
 
 
 def stats_enabled(profile_name):
+    """Indique si le suivi est activé dans la configuration du profil."""
     config_path = os.path.join(PROFILES_DIR, profile_name, PROFILE_CONFIG_FILE_NAME)
     config = read_json(config_path, {})
     return config.get("stats", {}).get("enabled", 1) == 1
 
 
 def main():
+    """Crée la session de jeu et incrémente son compteur de lancements."""
     state = read_state_file()
     system_id = state.get("SystemId", "").lower()
     game_path = state.get("GamePath", "")

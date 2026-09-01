@@ -238,6 +238,8 @@ global.retroachievements.password=
 - No manual editing of `recalbox.conf`  
 - `profile_config.json` is the **single source of truth** for RA settings and profile options
 
+NB: The information from the RA account is correctly applied even if the change is not visible in the menu/option on Recalbox (request a reboot), however if we look at the RA account in the Recalbox Manager (Web), the change has been made.
+
 ---
 
 ## ⏱️ Per-profile game statistics

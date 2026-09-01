@@ -15,6 +15,13 @@ Toutes les modifications importantes du projet sont documentées ici.
 - Déplacement des paramètres RetroAchievements dans la section `retroachievements` de `profile_config.json`.
 - Mise à jour des README français et anglais pour documenter la configuration et les statistiques.
 
+## 2.1.0 - 2026-08-20
+
+
+### Ajout
+- Gestion des compte RetroAchievements (RA) en fonction du profil.
+
+
 ## [2.0.0] - 2026-08-14
 
 ### Ajout

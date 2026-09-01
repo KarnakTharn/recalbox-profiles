@@ -17,6 +17,7 @@ PROFILE_CONFIG_FILE_NAME = "profile_config.json"
 
 
 def read_json(path, default):
+    """Lit un JSON ou renvoie ``default`` si le fichier est absent ou invalide."""
     if not os.path.exists(path):
         return default
     try:
@@ -28,6 +29,7 @@ def read_json(path, default):
 
 
 def write_json_atomic(path, data):
+    """Écrit un JSON via un fichier temporaire pour éviter un fichier partiel."""
     directory = os.path.dirname(path)
     os.makedirs(directory, exist_ok=True)
     file_descriptor, temporary_path = tempfile.mkstemp(dir=directory, prefix=".tmp_")
@@ -47,12 +49,14 @@ def write_json_atomic(path, data):
 
 
 def stats_enabled(profile_name):
+    """Indique si le suivi est activé dans la configuration du profil."""
     config_path = os.path.join(PROFILES_DIR, profile_name, PROFILE_CONFIG_FILE_NAME)
     config = read_json(config_path, {})
     return config.get("stats", {}).get("enabled", 1) == 1
 
 
 def main():
+    """Ajoute la durée de la session active puis la retire du profil courant."""
     current_profile = read_json(CURRENT_PROFILE_FILE, {})
     profile_name = current_profile.get("profile")
     active_game = current_profile.get("active_game")

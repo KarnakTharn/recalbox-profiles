@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+"""Active manuellement le profil Profil1 et restaure ses sauvegardes."""
+
 import os
 import shutil
 import json

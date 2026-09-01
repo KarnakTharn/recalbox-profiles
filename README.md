@@ -237,6 +237,8 @@ global.retroachievements.password=
 - Aucun besoin de modifier `recalbox.conf` manuellement  
 - `profile_config.json` reste la source unique des paramètres RA et des options du profil
 
+NB : Les informations du compte RA sont bien appliquées même si le changement n'est pas pas visible dans le menu/option sur Recalbox (demande un reboot), cependant si nous regardons le compte RA dans le Recalbox Manager (Web), la modification est bien réalisée.
+
 ---
 
 ## ⏱️ Statistiques de jeu par profil

@@ -307,7 +307,6 @@ def apply_favorites_settings(profile_name):
             "/recalbox/share/system/logs/recalbox_favorites.log",
             roms_path,
             "unmark",
-
         ]
         result = subprocess.run(unmark_cmd, capture_output=True, timeout=300)
         if result.returncode != 0:
@@ -326,7 +325,6 @@ def apply_favorites_settings(profile_name):
             roms_path,
             "apply",
             favorites_json,
-            
         ]
         result = subprocess.run(apply_cmd, capture_output=True, timeout=300)
         if result.returncode != 0:
@@ -391,6 +389,9 @@ def main():
     )  # Attendre un peu pour s'assurer que le jeu est bien terminé avant de modifier le gamelist.xml
     apply_RA_settings(profile_name)
     update_gamelist_xml(profile_name)
+    time.sleep(
+        5
+    )  # Attendre un peu pour s'assurer que le gamelist.xml est bien mis à jour avant d'appliquer les favoris
     apply_favorites_settings(profile_name)
 
 

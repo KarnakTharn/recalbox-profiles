@@ -13,6 +13,7 @@ from datetime import datetime
 CURRENT_PROFILE_FILE = "/recalbox/share/profiles/current_profile.json"
 PROFILES_DIR = "/recalbox/share/profiles"
 STATS_FILE_NAME = "game_time.json"
+PROFILE_CONFIG_FILE_NAME = "profile_config.json"
 
 
 def read_json(path, default):
@@ -45,12 +46,25 @@ def write_json_atomic(path, data):
         return False
 
 
+def stats_enabled(profile_name):
+    config_path = os.path.join(PROFILES_DIR, profile_name, PROFILE_CONFIG_FILE_NAME)
+    config = read_json(config_path, {})
+    return config.get("stats", {}).get("enabled", 1) == 1
+
+
 def main():
     current_profile = read_json(CURRENT_PROFILE_FILE, {})
     profile_name = current_profile.get("profile")
     active_game = current_profile.get("active_game")
 
     if not profile_name or not isinstance(active_game, dict):
+        return
+
+    # Une désactivation pendant une session annule son enregistrement et évite
+    # qu'une ancienne session soit reprise au lancement suivant.
+    if not stats_enabled(profile_name):
+        current_profile.pop("active_game", None)
+        write_json_atomic(CURRENT_PROFILE_FILE, current_profile)
         return
 
     system_id = active_game.get("system")

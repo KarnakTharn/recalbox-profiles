@@ -2,6 +2,19 @@
 
 Toutes les modifications importantes du projet sont documentées ici.
 
+## [2.1.0] - 2026-09-01
+
+### Ajout
+- Suivi des statistiques de jeu par profil via `game_stats[rungame].py` et `game_stats[endgame].py`.
+- Enregistrement de `timeplayed` (en secondes), `playcount` et `lastplayed` dans `profiles/<profil>/game_time.json`.
+- État temporaire `active_game` dans `current_profile.json` pour calculer la durée entre les événements `rungame` et `endgame`.
+- Option `stats.enabled` dans la configuration du profil pour activer ou désactiver le suivi des statistiques.
+
+### Modification
+- Remplacement de `RA_config.json` par `profile_config.json`, une configuration générique par profil.
+- Déplacement des paramètres RetroAchievements dans la section `retroachievements` de `profile_config.json`.
+- Mise à jour des README français et anglais pour documenter la configuration et les statistiques.
+
 ## [2.0.0] - 2026-08-14
 
 ### Ajout

@@ -235,18 +235,18 @@ def update_gamelist_xml(profile_name):
             pass
         return False
 
-def load_RA_config(profile_name):
+def load_profile_config(profile_name):
     """
-    Charge les valeurs RA depuis RA_config.json du profil.
+    Charge la configuration générique du profil.
     """
-    ra_config_path = os.path.join(PROFILES_DIR, profile_name, "RA_config.json")
+    config_path = os.path.join(PROFILES_DIR, profile_name, "profile_config.json")
 
-    with open(ra_config_path) as f:
+    with open(config_path) as f:
         return json.load(f)
 
 def update_recalbox_conf(recalbox_conf, mapping):
     """
-    Met à jour recalbox.conf avec les valeurs RA provenant de RA_config.json.
+    Met à jour recalbox.conf avec les valeurs RetroAchievements du profil.
     """
     with open(recalbox_conf) as f:
         lignes = f.readlines()
@@ -264,7 +264,8 @@ def apply_RA_settings(profile_name):
     """
     Applique les paramètres RA du profil dans recalbox.conf.
     """
-    mapping = load_RA_config(profile_name)
+    profile_config = load_profile_config(profile_name)
+    mapping = profile_config.get("retroachievements", {})
     update_recalbox_conf(RECALBOX_CONF, mapping)
     print(f"RetroAchievements mis à jour dans recalbox.conf pour le profil : {profile_name}")
     

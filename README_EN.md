@@ -33,12 +33,12 @@ recalbox/
       .sync_manifest.json
 
       Guest/
-        RA_config.json
+        profile_config.json
         megadrive/
           Aladdin.state
 
       Profil1/
-        RA_config.json
+        profile_config.json
         gba/
           Breath of Fire.srm
 
@@ -176,12 +176,22 @@ Requires write access to the system partition.
 
 ---
 
+### `game_stats[rungame].py` and `game_stats[endgame].py`
+
+These independent scripts track play time regardless of which save-loading event the user chooses.
+
+- `game_stats[rungame].py` creates a temporary session in `current_profile.json` and increments `playcount`.
+- `game_stats[endgame].py` calculates the session duration, adds it to `timeplayed`, updates `lastplayed`, then removes the temporary session.
+- The `profiles` system is ignored, and repeated events are not counted twice.
+
+---
+
 ## 🏆 Automatic RetroAchievements (RA) Management
 
 Each profile may contain:
 
 ```
-/recalbox/share/profiles/<profile>/RA_config.json
+/recalbox/share/profiles/<profile>/profile_config.json
 ```
 
 This file defines the RA settings for that profile:
@@ -191,10 +201,13 @@ This file defines the RA settings for that profile:
 
 ```json
 {
+  "stats": {"enabled": 1},
+  "retroachievements": {
     "global.retroachievements=": "1",
     "global.retroachievements.hardcore=": "0",
     "global.retroachievements.username=": "username_ra",
     "global.retroachievements.password=": "password_ra"
+  }
 }
 ```
 
@@ -202,7 +215,7 @@ This file defines the RA settings for that profile:
 
 When a profile is selected:
 
-- The script reads `RA_config.json`
+- The script reads the `retroachievements` section from `profile_config.json`
 - The values are automatically written into:
 
 ```
@@ -223,7 +236,46 @@ global.retroachievements.password=
 - Independent RA accounts per profile  
 - Hardcore mode configurable per profile  
 - No manual editing of `recalbox.conf`  
-- `RA_config.json` is the **single source of truth**  
+- `profile_config.json` is the **single source of truth** for RA settings and profile options
+
+---
+
+## ⏱️ Per-profile game statistics
+
+The `stats` section in `profile_config.json` enables or disables tracking for a profile:
+
+```json
+"stats": {"enabled": 1}
+```
+
+- `1`: tracking is enabled;
+- `0`: no launches or play time are recorded.
+
+Statistics are stored in:
+
+```
+/recalbox/share/profiles/<profile>/game_time.json
+```
+
+Example:
+
+```json
+{
+  "megadrive": {
+    "Aladdin": {
+      "timeplayed": 5423,
+      "playcount": 12,
+      "lastplayed": "20260901T142000"
+    }
+  }
+}
+```
+
+- `timeplayed`: total time in seconds;
+- `playcount`: number of game launches;
+- `lastplayed`: date and time of the last launch, using the Recalbox `YYYYMMDDTHHMMSS` format.
+
+While a game is running, `current_profile.json` temporarily contains `active_game` with the game and its start time. This entry is removed by the `endgame` event after the duration is recorded.
 
 ---
 
@@ -232,6 +284,7 @@ global.retroachievements.password=
 - Active profile: `share/profiles/current_profile.json`  
 - Log file: `share/profiles/profiles.log`  
 - Sync manifest: `share/profiles/.sync_manifest.json`  
+- Statistics: `share/profiles/<profile>/game_time.json`
 - Profile ROMs: `share/roms/profiles/`  
 - Gamelist: `share/roms/profiles/gamelist.xml`  
 - Recalbox configuration: `share/system/recalbox.conf`  
@@ -293,4 +346,4 @@ Inside `share/userscripts/manual/`:
 - Scripts rely on `/recalbox/share/` and `/tmp/es_state.inf`  
 - The `profiles` system must be ignored by save/load scripts  
 - `current_profile.json` must exist and be valid  
-- Ensure write permissions on `share/profiles/` and `share/saves/`  
+- Ensure write permissions on `share/profiles/` and `share/saves/`

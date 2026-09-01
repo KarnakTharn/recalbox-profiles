@@ -14,6 +14,7 @@ STATE_FILE = "/tmp/es_state.inf"
 CURRENT_PROFILE_FILE = "/recalbox/share/profiles/current_profile.json"
 PROFILES_DIR = "/recalbox/share/profiles"
 STATS_FILE_NAME = "game_time.json"
+PROFILE_CONFIG_FILE_NAME = "profile_config.json"
 
 
 def read_state_file():
@@ -65,6 +66,12 @@ def get_game_name(game_path):
     return os.path.splitext(os.path.basename(game_path))[0]
 
 
+def stats_enabled(profile_name):
+    config_path = os.path.join(PROFILES_DIR, profile_name, PROFILE_CONFIG_FILE_NAME)
+    config = read_json(config_path, {})
+    return config.get("stats", {}).get("enabled", 1) == 1
+
+
 def main():
     state = read_state_file()
     system_id = state.get("SystemId", "").lower()
@@ -79,6 +86,9 @@ def main():
     profile_name = current_profile.get("profile")
     if not profile_name:
         print("Aucun profil courant défini")
+        return
+
+    if not stats_enabled(profile_name):
         return
 
     active_game = current_profile.get("active_game", {})

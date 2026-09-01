@@ -1,6 +1,11 @@
 {
+  "stats": {
+    "enabled": 1
+  },
+  "retroachievements": {
     "global.retroachievements=": "0",
     "global.retroachievements.hardcore=": "0",
     "global.retroachievements.username=": "",
     "global.retroachievements.password=": ""
+  }
 }

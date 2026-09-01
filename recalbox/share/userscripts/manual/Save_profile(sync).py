@@ -1,4 +1,9 @@
 #!/usr/bin/env python3
+"""Force la copie des sauvegardes courantes vers le profil actif.
+
+Script manuel Recalbox : sync.
+"""
+
 import os
 import shutil
 import json

@@ -1,3 +1,8 @@
+"""Restaure les sauvegardes du profil actif au lancement réel d'un jeu.
+
+Événement Recalbox : rungame.
+"""
+
 import os
 import json
 import shutil

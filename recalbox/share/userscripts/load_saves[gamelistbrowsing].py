@@ -1,3 +1,8 @@
+"""Restaure les sauvegardes du profil actif pour l'aperçu des save states.
+
+Événement Recalbox : gamelistbrowsing.
+"""
+
 import os
 import json
 import shutil

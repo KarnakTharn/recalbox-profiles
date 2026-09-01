@@ -6,14 +6,19 @@
 
 import json
 import os
+import sys
 import tempfile
 import time
 from datetime import datetime
+
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from others.recalbox_logging import get_logger
 
 CURRENT_PROFILE_FILE = "/recalbox/share/profiles/current_profile.json"
 PROFILES_DIR = "/recalbox/share/profiles"
 STATS_FILE_NAME = "game_time.json"
 PROFILE_CONFIG_FILE_NAME = "profile_config.json"
+LOGGER = get_logger("game_stats_endgame")
 
 
 def read_json(path, default):
@@ -24,7 +29,7 @@ def read_json(path, default):
         with open(path, "r") as json_file:
             return json.load(json_file)
     except (OSError, json.JSONDecodeError) as error:
-        print(f"Erreur de lecture de {path}: {error}")
+        LOGGER.error("Erreur de lecture de %s : %s", path, error)
         return default
 
 
@@ -40,7 +45,7 @@ def write_json_atomic(path, data):
         os.replace(temporary_path, path)
         return True
     except OSError as error:
-        print(f"Erreur d'écriture de {path}: {error}")
+        LOGGER.error("Erreur d'écriture de %s : %s", path, error)
         try:
             os.unlink(temporary_path)
         except OSError:
@@ -75,7 +80,7 @@ def main():
     game_name = active_game.get("game")
     started_at = active_game.get("started_at_timestamp")
     if not system_id or not game_name or not isinstance(started_at, (int, float)):
-        print("Session de jeu incomplète : statistiques non mises à jour")
+        LOGGER.warning("Session de jeu incomplète : statistiques non mises à jour")
         return
 
     elapsed_seconds = max(0, int(time.time() - started_at))
@@ -100,7 +105,7 @@ def main():
     # Le retrait après l'écriture des statistiques rend endgame idempotent.
     current_profile.pop("active_game", None)
     if write_json_atomic(CURRENT_PROFILE_FILE, current_profile):
-        print(f"Temps ajouté pour {game_name}: {elapsed_seconds} seconde(s)")
+        LOGGER.info("Temps ajouté pour %s : %s seconde(s)", game_name, elapsed_seconds)
 
 
 if __name__ == "__main__":

@@ -7,10 +7,15 @@ Ne copie que les fichiers qui ont été modifiés après leur dernière copie
 """
 
 import os
+import sys
 import json
 import shutil
 from pathlib import Path
-from datetime import datetime
+
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from others.recalbox_logging import get_logger
+
+LOGGER = get_logger("save_profile_endgame")
 
 # Fichier généré par EmulationStation indiquant l'état (fin de jeu)
 STATE_FILE = "/tmp/es_state.inf"
@@ -26,27 +31,6 @@ PROFILES_DIR = "/recalbox/share/profiles"
 
 # Fichier de manifest pour tracker les dates de synchronisation
 SYNC_MANIFEST_FILE = "/recalbox/share/profiles/.sync_manifest.json"
-
-# Fichier de log unique
-LOG_FILE = "/recalbox/share/profiles/profiles.log"
-
-
-def log_event(log_type, system_id, action, profile):
-    """
-    Log au format :
-    [system] - [YYYY-MM-DD HH:MM:SS] - profiles - ProfileSwap - nom_du_profil
-    """
-    os.makedirs(PROFILES_DIR, exist_ok=True)
-
-    timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-
-    log_entry = f"[{log_type}] | [{timestamp}] | {system_id} | {action} | {profile}"
-
-    try:
-        with open(LOG_FILE, "a") as f:
-            f.write(log_entry + "\n")
-    except Exception as e:
-        print(f"Erreur lors de l'écriture dans le log: {e}")
 
 
 def read_state_file():
@@ -79,7 +63,7 @@ def read_current_profile():
             data = json.load(f)
             return data.get("profile", None)
     except Exception as e:
-        print(f"Erreur lors de la lecture du profil courant: {e}")
+        LOGGER.error("Erreur lors de la lecture du profil courant: %s", e)
         return None
 
 
@@ -105,7 +89,7 @@ def load_sync_manifest():
             with open(SYNC_MANIFEST_FILE, "r") as f:
                 return json.load(f)
         except Exception as e:
-            print(f"Erreur lors de la lecture du manifest: {e}")
+            LOGGER.error("Erreur lors de la lecture du manifest: %s", e)
 
     return {}
 
@@ -119,7 +103,7 @@ def save_sync_manifest(manifest):
         with open(SYNC_MANIFEST_FILE, "w") as f:
             json.dump(manifest, f, indent=2)
     except Exception as e:
-        print(f"Erreur lors de la sauvegarde du manifest: {e}")
+        LOGGER.error("Erreur lors de la sauvegarde du manifest: %s", e)
 
 
 def file_modified_after(source_path, sync_timestamp):
@@ -180,10 +164,10 @@ def copy_save_file(source_path, profile_name, system_id, game_name):
 
     try:
         shutil.copy2(source_path, target_path)
-        print(f"Save copiée: {filename}")
+        LOGGER.debug("Save copiée: %s", filename)
         return True
     except Exception as e:
-        print(f"Erreur lors de la copie de {filename}: {e}")
+        LOGGER.error("Erreur lors de la copie de %s: %s", filename, e)
         return False
 
 
@@ -199,7 +183,7 @@ def main():
     profile_name = read_current_profile()
 
     if not profile_name:
-        print("Aucun profil courant défini")
+        LOGGER.warning("Aucun profil courant défini")
         return
 
     # Récupérer les infos du jeu
@@ -217,10 +201,14 @@ def main():
 
     if not save_files:
         # Pas de saves trouvées, c'est normal
+        LOGGER.debug("Aucune save trouvée pour %s", game_name)
         return
 
-    print(
-        f"Sauvegarde des saves pour {game_name} ({system_id}) vers profil {profile_name}"
+    LOGGER.info(
+        "Sauvegarde des saves pour %s (%s) vers profil %s",
+        game_name,
+        system_id,
+        profile_name,
     )
 
     # Copier les saves modifiées

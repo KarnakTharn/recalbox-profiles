@@ -8,6 +8,7 @@ Toutes les modifications importantes du projet sont documentées ici.
 - Gestion des favoris EmulationStation par profil via la section `favorites` de `profile_config.json`.
 - Export manuel des favoris du profil actif vers `profiles/<profil>/favorites.json`.
 - Application automatique des favoris du profil lors de sa sélection : retrait des favoris actifs, application du fichier JSON, puis redémarrage d'EmulationStation.
+- Refonte du système de log.
 
 ### Modification
 - Ajout de la documentation française et anglaise du flux de sauvegarde et de restauration des favoris.

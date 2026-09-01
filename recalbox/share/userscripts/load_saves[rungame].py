@@ -4,10 +4,16 @@
 """
 
 import os
+import sys
 import json
 import shutil
 from pathlib import Path
-from datetime import datetime
+
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from others.recalbox_logging import get_logger
+
+LOGGER = get_logger("load_saves_rungame")
+
 
 # Fichier généré par EmulationStation contenant les infos du jeu en cours
 STATE_FILE = "/tmp/es_state.inf"
@@ -20,26 +26,6 @@ SHARES_SAVES_DIR = "/recalbox/share/saves"
 
 # Dossier contenant les profils et leurs saves
 PROFILES_DIR = "/recalbox/share/profiles"
-
-# Fichier de log des actions du script
-LOG_FILE = "/recalbox/share/profiles/profiles.log"
-
-
-def log_event(log_type, system_id, action, profile):
-    """
-    Écrit une ligne dans le fichier de log.
-    Format :
-    [profil] | [YYYY-MM-DD HH:MM:SS] | system | action | game
-    """
-    os.makedirs(PROFILES_DIR, exist_ok=True)
-    timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-    log_entry = f"[{log_type}] | [{timestamp}] | {system_id} | {action} | {profile}"
-
-    try:
-        with open(LOG_FILE, "a") as f:
-            f.write(log_entry + "\n")
-    except Exception as e:
-        print(f"Erreur lors de l'écriture dans le log: {e}")
 
 
 def read_state_file():
@@ -75,7 +61,7 @@ def read_current_profile():
             data = json.load(f)
             return data.get("profile", None)
     except Exception as e:
-        print(f"Erreur lors de la lecture du profil courant: {e}")
+        LOGGER.error("Erreur lors de la lecture du profil courant: %s", e)
         return None
 
 
@@ -146,14 +132,14 @@ def restore_save_file(profile_save_path, system_id):
         # Copie uniquement si le fichier diffère
         if files_are_different(profile_save_path, target_path):
             shutil.copy2(profile_save_path, target_path)
-            print(f"Save copiée (différente) : {filename}")
+            LOGGER.debug("Save copiée (différente) : %s", filename)
             return True
         else:
-            print(f"Save identique, pas de copie : {filename}")
+            LOGGER.debug("Save identique, pas de copie : %s", filename)
             return False
 
     except Exception as e:
-        print(f"Erreur lors de la restauration de {filename}: {e}")
+        LOGGER.error("Erreur lors de la restauration de %s: %s", filename, e)
         return False
 
 
@@ -172,9 +158,9 @@ def delete_existing_saves(system_id, game_name):
             file_path = os.path.join(target_dir, filename)
             try:
                 os.remove(file_path)
-                print(f"Save supprimée (profil sans save) : {filename}")
+                LOGGER.debug("Save supprimée (profil sans save) : %s", filename)
             except Exception as e:
-                print(f"Erreur lors de la suppression de {filename}: {e}")
+                LOGGER.error("Erreur lors de la suppression de %s: %s", filename, e)
 
 
 def main():
@@ -197,7 +183,7 @@ def main():
 
     profile_name = read_current_profile()
     if not profile_name:
-        print("Aucun profil courant défini")
+        LOGGER.warning("Aucun profil courant défini")
         return
 
     game_path = info.get("GamePath", "")
@@ -210,18 +196,21 @@ def main():
 
     if not save_files:
         # Aucun fichier → suppression des saves globales
-        print(f"Aucune save dans le profil → suppression des saves actuelles")
+        LOGGER.info("Aucune save dans le profil → suppression des saves actuelles")
         delete_existing_saves(system_id, game_name)
     else:
         # Copie des saves du profil vers /share/saves
-        print(
-            f"Restauration des saves pour {game_name} ({system_id}) depuis profil {profile_name}"
+        LOGGER.info(
+            "Restauration des saves pour %s (%s) depuis profil %s",
+            game_name,
+            system_id,
+            profile_name,
         )
         for save_file in save_files:
             restore_save_file(save_file, system_id)
 
     # Log du lancement du jeu
-    log_event(profile_name, system_id, "GameStart", game_name)
+    LOGGER.info("Saves restaurées pour le jeu %s", game_name)
 
 
 if __name__ == "__main__":

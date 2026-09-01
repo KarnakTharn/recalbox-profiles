@@ -9,7 +9,11 @@ profil. Il ne modifie pas les favoris d'EmulationStation.
 
 import json
 import os
+import sys
 import subprocess
+
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
+from others.recalbox_logging import get_logger
 
 # Fichier qui contient le nom du profil actuellement sélectionné.
 CURRENT_PROFILE_FILE = "/recalbox/share/profiles/current_profile.json"
@@ -19,6 +23,8 @@ PROFILES_DIR = "/recalbox/share/profiles"
 PROFILE_CONFIG_FILE_NAME = "profile_config.json"
 FAVORITES_SCRIPT = "/recalbox/share/userscripts/others/recalbox_favorites.py"
 ROMS_DIR = "/recalbox/share/roms"
+
+LOGGER = get_logger("favorites_export")
 
 
 def profile_exists(profile_name):
@@ -43,11 +49,15 @@ def load_favorites_config(profile_name):
         with open(config_path, encoding="utf-8") as config_file:
             data = json.load(config_file)
     except (FileNotFoundError, json.JSONDecodeError, OSError) as error:
-        print(f"[load_favorites_config] Lecture impossible de {config_path}: {error}")
+        LOGGER.error(
+            "[load_favorites_config] Lecture impossible de %s: %s", config_path, error
+        )
         return {}
 
     if not isinstance(data, dict):
-        print(f"[load_favorites_config] Configuration invalide dans {config_path}.")
+        LOGGER.error(
+            "[load_favorites_config] Configuration invalide dans %s.", config_path
+        )
         return {}
 
     favorites_config = data.get("favorites", {})
@@ -61,30 +71,43 @@ def main():
         with open(CURRENT_PROFILE_FILE, encoding="utf-8") as current_profile_file:
             current_profile_data = json.load(current_profile_file)
     except (FileNotFoundError, json.JSONDecodeError, OSError) as error:
-        print(f"Lecture impossible de {CURRENT_PROFILE_FILE}: {error}")
+        LOGGER.error("Lecture impossible de %s: %s", CURRENT_PROFILE_FILE, error)
         return
 
     if not isinstance(current_profile_data, dict):
-        print(f"Configuration invalide dans {CURRENT_PROFILE_FILE}.")
+        LOGGER.error("Configuration invalide dans %s.", CURRENT_PROFILE_FILE)
         return
 
     current_profile_name = current_profile_data.get("profile")
 
     if not profile_exists(current_profile_name):
-        print(f"Profil courant invalide ou introuvable : {current_profile_name}")
+        LOGGER.error(
+            "Profil courant invalide ou introuvable : %s", current_profile_name
+        )
         return
 
     favorites_config = load_favorites_config(current_profile_name)
     if favorites_config.get("enabled") not in (1, True):
-        print(
-            f"Export ignoré : favoris désactivés pour le profil {current_profile_name}."
+        LOGGER.info(
+            "Export ignoré : favoris désactivés pour le profil %s.",
+            current_profile_name,
         )
         return
 
     output_file = os.path.join(PROFILES_DIR, current_profile_name, "favorites.json")
-    print(f"Export des favoris du profil {current_profile_name} vers {output_file}.")
+    LOGGER.info(
+        "Export des favoris du profil %s vers %s.", current_profile_name, output_file
+    )
     subprocess.run(
-        ["python3", FAVORITES_SCRIPT, ROMS_DIR, "export", output_file],
+        [
+            "python3",
+            FAVORITES_SCRIPT,
+            ROMS_DIR,
+            "export",
+            output_file,
+            "--log",
+            "/recalbox/share/system/logs/recalbox_favorites.log",
+        ],
         check=True,
     )
 
@@ -93,4 +116,4 @@ if __name__ == "__main__":
     try:
         main()
     except (OSError, subprocess.CalledProcessError) as error:
-        print(f"Erreur lors de l'export des favoris : {error}")
+        LOGGER.exception("Erreur lors de l'export des favoris : %s", error)

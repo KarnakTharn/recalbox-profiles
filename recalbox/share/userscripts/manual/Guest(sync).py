@@ -2,8 +2,15 @@
 """Active manuellement le profil Guest et restaure ses sauvegardes."""
 
 import os
+import sys
 import shutil
 import json
+
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
+from others.recalbox_logging import get_logger
+
+LOGGER = get_logger("profile_manual")
+
 
 # Nom du profil à activer. Ici "Guest", mais peut être remplacé par n'importe quel profil.
 PROFILE_NAME = "Guest"
@@ -88,7 +95,7 @@ def main():
     restore_profile_saves()
     save_current_profile()
 
-    print(f"Switched to {PROFILE_NAME} profile successfully.")
+    LOGGER.info("Switched to %s profile successfully.", PROFILE_NAME)
 
 
 if __name__ == "__main__":

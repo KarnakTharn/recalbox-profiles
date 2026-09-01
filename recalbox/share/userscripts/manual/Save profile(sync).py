@@ -5,9 +5,14 @@ Script manuel Recalbox : sync.
 """
 
 import os
+import sys
 import shutil
 import json
-import sys
+
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
+from others.recalbox_logging import get_logger
+
+LOGGER = get_logger("save_profile_manual")
 
 # Répertoire principal de Recalbox (partage réseau / stockage persistant)
 BASE_DIR = "/recalbox/share"
@@ -49,7 +54,7 @@ def parse_state_file():
     with open(STATE_FILE) as f:
         for line in f:
             if "=" in line:
-                print(line.strip())  # Affiche la ligne pour debug
+                LOGGER.debug("State: %s", line.strip())
                 k, v = line.strip().split("=", 1)
                 info[k] = v
 
@@ -72,7 +77,7 @@ def backup_saves(profile):
     for item in os.listdir(SAVES_DIR):
         src = os.path.join(SAVES_DIR, item)
         dst = os.path.join(profile_dir, item)
-        print(f"Copie de {src} vers {dst}")  # Affiche ce qui est copié pour debug
+        LOGGER.debug("Copie de %s vers %s", src, dst)
 
         # Si c'est un dossier (ex: un émulateur), on copie récursivement
         if os.path.isdir(src):
@@ -135,7 +140,7 @@ def main():
 
     # Lance la sauvegarde
     backup_saves(profile)
-    print(f"Sauvegardes copiées pour le profil : {profile}")
+    LOGGER.info("Sauvegardes copiées pour le profil : %s", profile)
 
 
 if __name__ == "__main__":

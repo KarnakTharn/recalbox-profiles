@@ -360,6 +360,10 @@ favoris du profil lorsque `favorites.enabled` vaut `1` : il retire d'abord les
 favoris actifs, applique `favorites.json`, puis redémarre EmulationStation.
 Un profil dont les favoris sont désactivés ne déclenche pas cette opération.
 
+Le script `recalbox_favorites.py` utilisé pour cette gestion provient du projet
+[recalbox-rom-list-manager](https://github.com/jffella/recalbox-rom-list-manager)
+de jffella.
+
 ---
 
 ## 🛡️ Remarques

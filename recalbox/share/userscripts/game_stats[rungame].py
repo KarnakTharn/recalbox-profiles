@@ -6,9 +6,16 @@
 
 import json
 import os
+import sys
 import tempfile
 import time
 from datetime import datetime
+
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from others.recalbox_logging import get_logger
+
+LOGGER = get_logger("game_stats_rungame")
+
 
 STATE_FILE = "/tmp/es_state.inf"
 CURRENT_PROFILE_FILE = "/recalbox/share/profiles/current_profile.json"
@@ -39,7 +46,7 @@ def read_json(path, default):
         with open(path, "r") as json_file:
             return json.load(json_file)
     except (OSError, json.JSONDecodeError) as error:
-        print(f"Erreur de lecture de {path}: {error}")
+        LOGGER.error("Erreur de lecture de %s : %s", path, error)
         return default
 
 
@@ -55,7 +62,7 @@ def write_json_atomic(path, data):
         os.replace(temporary_path, path)
         return True
     except OSError as error:
-        print(f"Erreur d'écriture de {path}: {error}")
+        LOGGER.error("Erreur d'écriture de %s : %s", path, error)
         try:
             os.unlink(temporary_path)
         except OSError:
@@ -91,7 +98,7 @@ def main():
     current_profile = read_json(CURRENT_PROFILE_FILE, {})
     profile_name = current_profile.get("profile")
     if not profile_name:
-        print("Aucun profil courant défini")
+        LOGGER.warning("Aucun profil courant défini")
         return
 
     if not stats_enabled(profile_name):
@@ -103,7 +110,7 @@ def main():
         active_game.get("system") == system_id
         and active_game.get("game_path") == game_path
     ):
-        print(f"Session déjà démarrée pour {game_name}")
+        LOGGER.debug("Session déjà démarrée pour %s", game_name)
         return
 
     now = time.time()
@@ -133,7 +140,7 @@ def main():
         "started_at_timestamp": now,
     }
     if write_json_atomic(CURRENT_PROFILE_FILE, current_profile):
-        print(f"Statistiques démarrées pour {game_name} ({profile_name})")
+        LOGGER.info("Statistiques démarrées pour %s (%s)", game_name, profile_name)
 
 
 if __name__ == "__main__":

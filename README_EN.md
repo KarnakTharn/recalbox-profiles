@@ -361,6 +361,10 @@ favorites when `favorites.enabled` is set to `1`: it first removes the active
 favorites, applies `favorites.json`, then restarts EmulationStation. A profile
 with favorites disabled does not trigger this operation.
 
+The `recalbox_favorites.py` script used for this feature originates from
+jffella's [recalbox-rom-list-manager](https://github.com/jffella/recalbox-rom-list-manager)
+project.
+
 ---
 
 ## 🛡️ Notes

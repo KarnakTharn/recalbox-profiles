@@ -6,14 +6,19 @@ Détecte quand une ROM du système "profiles" est lancée et met à jour le prof
 """
 
 import os
+import sys
 import json
 import subprocess
-from datetime import datetime
 import signal
 import time
 import xml.etree.ElementTree as ET
 from shutil import copy2
 import tempfile
+
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from others.recalbox_logging import get_logger
+
+LOGGER = get_logger("swap_profile_rungame")
 
 # Fichier généré par EmulationStation indiquant l'état (lancement/fin de jeu)
 STATE_FILE = "/tmp/es_state.inf"
@@ -24,9 +29,6 @@ CURRENT_PROFILE_FILE = "/recalbox/share/profiles/current_profile.json"
 # Dossier des profils disponibles
 PROFILES_DIR = "/recalbox/share/profiles"
 
-# Fichier de log unique
-LOG_FILE = "/recalbox/share/profiles/profiles.log"
-
 # Fichier gamelist.xml pour les profils
 GL_PATH = "/recalbox/share/roms/profiles/gamelist.xml"
 BACKUP_PATH = GL_PATH + ".bak"
@@ -35,24 +37,6 @@ REGION_OTHER = "eu"
 
 # Fichier de configuration de Recalbox
 RECALBOX_CONF = "/recalbox/share/system/recalbox.conf"
-
-
-def log_event(log_type, system_id, action, profile):
-    """
-    Log au format :
-    [system] - [YYYY-MM-DD HH:MM:SS] - profiles - ProfileSwap - nom_du_profil
-    """
-    os.makedirs(PROFILES_DIR, exist_ok=True)
-
-    timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-
-    log_entry = f"[{log_type}] | [{timestamp}] | {system_id} | {action} | {profile}"
-
-    try:
-        with open(LOG_FILE, "a") as f:
-            f.write(log_entry + "\n")
-    except Exception as e:
-        print(f"Erreur lors de l'écriture dans le log: {e}")
 
 
 def read_state_file():
@@ -114,7 +98,7 @@ def update_current_profile(profile_name):
             json.dump(profile_data, f)
         return True
     except Exception as e:
-        print(f"Erreur lors de la mise à jour du profil: {e}")
+        LOGGER.error("Erreur lors de la mise à jour du profil: %s", e)
         return False
 
 
@@ -138,11 +122,11 @@ def quit_retroarch(pid):
     """
     try:
         os.kill(pid, signal.SIGINT)
-        print(f"Signal SIGINT envoyé au processus {pid}.")
+        LOGGER.debug("Signal SIGINT envoyé au processus %s", pid)
     except ProcessLookupError:
-        print("Le processus RetroArch n'existe plus.")
+        LOGGER.debug("Le processus RetroArch n'existe plus")
     except PermissionError:
-        print("Permission refusée pour envoyer le signal.")
+        LOGGER.warning("Permission refusée pour envoyer le signal")
 
 
 def kill_game():
@@ -152,9 +136,9 @@ def kill_game():
     pid = find_retroarch_pid()
 
     if pid is None:
-        print("Aucun jeu RetroArch en cours n'a été trouvé.")
+        LOGGER.debug("Aucun jeu RetroArch en cours n'a été trouvé")
     else:
-        print(f"Jeu en cours trouvé avec PID : {pid}")
+        LOGGER.debug("Jeu en cours trouvé avec PID : %s", pid)
         quit_retroarch(pid)
 
 
@@ -170,17 +154,17 @@ def update_gamelist_xml(profile_name):
     """
 
     if not os.path.exists(GL_PATH):
-        print(f"[update_gamelist_region_only] gamelist introuvable: {GL_PATH}")
+        LOGGER.error("[update_gamelist_region_only] gamelist introuvable: %s", GL_PATH)
         return False
 
     try:
         tree = ET.parse(GL_PATH)
         root = tree.getroot()
     except ET.ParseError as e:
-        print(f"[update_gamelist_region_only] erreur parse XML: {e}")
+        LOGGER.error("[update_gamelist_region_only] erreur parse XML: %s", e)
         return False
     except Exception as e:
-        print(f"[update_gamelist_region_only] erreur lecture: {e}")
+        LOGGER.error("[update_gamelist_region_only] erreur lecture: %s", e)
         return False
 
     changed = False
@@ -210,14 +194,16 @@ def update_gamelist_xml(profile_name):
                 changed = True
 
     if not changed:
-        print("[update_gamelist_region_only] aucune modification nécessaire")
+        LOGGER.debug("[update_gamelist_region_only] aucune modification nécessaire")
         return True
 
     # backup et écriture atomique
     try:
         copy2(GL_PATH, BACKUP_PATH)
     except Exception as e:
-        print(f"[update_gamelist_region_only] impossible de créer la sauvegarde: {e}")
+        LOGGER.error(
+            "[update_gamelist_region_only] impossible de créer la sauvegarde: %s", e
+        )
 
     try:
         dirpath = os.path.dirname(GL_PATH)
@@ -225,12 +211,13 @@ def update_gamelist_xml(profile_name):
         os.close(fd)
         tree.write(tmp_path, encoding="utf-8", xml_declaration=True)
         os.replace(tmp_path, GL_PATH)
-        print(
-            f"[update_gamelist_region_only] gamelist mis à jour pour profil '{profile_name}'"
+        LOGGER.debug(
+            "[update_gamelist_region_only] gamelist mis à jour pour profil '%s'",
+            profile_name,
         )
         return True
     except Exception as e:
-        print(f"[update_gamelist_region_only] erreur écriture: {e}")
+        LOGGER.error("[update_gamelist_region_only] erreur écriture: %s", e)
         # tentative de restauration depuis backup
         try:
             if os.path.exists(BACKUP_PATH):
@@ -273,8 +260,9 @@ def apply_RA_settings(profile_name):
     profile_config = load_profile_config(profile_name)
     mapping = profile_config.get("retroachievements", {})
     update_recalbox_conf(RECALBOX_CONF, mapping)
-    print(
-        f"RetroAchievements mis à jour dans recalbox.conf pour le profil : {profile_name}"
+    LOGGER.info(
+        "RetroAchievements mis à jour dans recalbox.conf pour le profil : %s",
+        profile_name,
     )
 
 
@@ -288,14 +276,16 @@ def apply_favorites_settings(profile_name):
         favorites_config = profile_config.get("favorites", {})
 
         if not favorites_config.get("enabled"):
-            print(f"Favoris désactivés pour le profil '{profile_name}'")
+            LOGGER.debug("Favoris désactivés pour le profil '%s'", profile_name)
             return
 
         profile_path = os.path.join(PROFILES_DIR, profile_name)
         favorites_json = os.path.join(profile_path, "favorites.json")
 
         if not os.path.exists(favorites_json):
-            print(f"Fichier favorites.json non trouvé pour le profil '{profile_name}'")
+            LOGGER.warning(
+                "Fichier favorites.json non trouvé pour le profil '%s'", profile_name
+            )
             return
 
         # Répertoire ROMS de Recalbox
@@ -305,38 +295,55 @@ def apply_favorites_settings(profile_name):
         script_path = "/recalbox/share/userscripts/others/recalbox_favorites.py"
 
         if not os.path.exists(script_path):
-            print(f"Script recalbox_favorites.py non trouvé: {script_path}")
+            LOGGER.error("Script recalbox_favorites.py non trouvé: %s", script_path)
             return
 
         # Étape 1: unmark tous les favoris
-        print(f"Retrait de tous les favoris...")
-        unmark_cmd = ["python3", script_path, roms_path, "unmark"]
+        LOGGER.info("Retrait de tous les favoris...")
+        unmark_cmd = [
+            "python3",
+            script_path,
+            roms_path,
+            "unmark",
+            "--log",
+            "/recalbox/share/system/logs/recalbox_favorites.log",
+        ]
         result = subprocess.run(unmark_cmd, capture_output=True, timeout=300)
         if result.returncode != 0:
-            print(f"Erreur lors du unmark: {result.stderr.decode()}")
+            LOGGER.error("Erreur lors du unmark: %s", result.stderr.decode())
             return
 
-        print(f"Favoris retirés avec succès.")
+        LOGGER.info("Favoris retirés avec succès")
 
         # Étape 2: appliquer les favoris du profil
-        print(f"Application des favoris pour le profil '{profile_name}'...")
-        apply_cmd = ["python3", script_path, roms_path, "apply", favorites_json]
+        LOGGER.info("Application des favoris pour le profil '%s'...", profile_name)
+        apply_cmd = [
+            "python3",
+            script_path,
+            roms_path,
+            "apply",
+            favorites_json,
+            "--log",
+            "/recalbox/share/system/logs/recalbox_favorites.log",
+        ]
         result = subprocess.run(apply_cmd, capture_output=True, timeout=300)
         if result.returncode != 0:
-            print(f"Erreur lors de l'application des favoris: {result.stderr.decode()}")
+            LOGGER.error(
+                "Erreur lors de l'application des favoris: %s", result.stderr.decode()
+            )
             return
 
-        print(f"Favoris appliqués avec succès pour le profil '{profile_name}'")
+        LOGGER.info("Favoris appliqués avec succès pour le profil '%s'", profile_name)
 
     except Exception as e:
-        print(f"Erreur lors de la gestion des favoris: {e}")
+        LOGGER.error("Erreur lors de la gestion des favoris: %s", e)
 
     # Redémarrer EmulationStation
     try:
         subprocess.run(["es", "restart"], timeout=30)
-        print("EmulationStation redémarré avec succès")
+        LOGGER.info("EmulationStation redémarré avec succès")
     except Exception as e:
-        print(f"Erreur lors du redémarrage d'EmulationStation: {e}")
+        LOGGER.error("Erreur lors du redémarrage d'EmulationStation: %s", e)
 
 
 def main():
@@ -361,14 +368,12 @@ def main():
 
     # Vérifier que le profil existe
     if not profile_exists(profile_name):
-        print(f"Profil '{profile_name}' non trouvé dans {PROFILES_DIR}")
+        LOGGER.error("Profil '%s' non trouvé dans %s", profile_name, PROFILES_DIR)
         return
 
     # Mettre à jour le profil courant
     if update_current_profile(profile_name):
-        print(f"Profil changé en: {profile_name}")
-        # Logger l'événement de changement de profil
-        log_event("system", system_id, "ProfileSwap", profile_name)
+        LOGGER.info("Profil changé en: %s", profile_name)
 
     # Terminer le jeu (qui n'est qu'un sélecteur)
     time.sleep(
@@ -391,4 +396,4 @@ if __name__ == "__main__":
     try:
         main()
     except Exception as e:
-        print(f"Erreur lors de l'exécution du script: {e}")
+        LOGGER.exception("Erreur lors de l'exécution du script: %s", e)

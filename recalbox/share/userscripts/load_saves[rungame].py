@@ -214,7 +214,9 @@ def main():
         delete_existing_saves(system_id, game_name)
     else:
         # Copie des saves du profil vers /share/saves
-        print(f"Restauration des saves pour {game_name} ({system_id}) depuis profil {profile_name}")
+        print(
+            f"Restauration des saves pour {game_name} ({system_id}) depuis profil {profile_name}"
+        )
         for save_file in save_files:
             restore_save_file(save_file, system_id)
 

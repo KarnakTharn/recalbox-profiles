@@ -90,7 +90,7 @@ def get_game_name_from_path(game_path):
     """
     if not game_path:
         return None
-    
+
     filename = os.path.basename(game_path)
     game_name = os.path.splitext(filename)[0]
     return game_name
@@ -106,7 +106,7 @@ def load_sync_manifest():
                 return json.load(f)
         except Exception as e:
             print(f"Erreur lors de la lecture du manifest: {e}")
-    
+
     return {}
 
 
@@ -128,13 +128,13 @@ def file_modified_after(source_path, sync_timestamp):
     """
     if not os.path.exists(source_path):
         return False
-    
+
     file_mtime = os.path.getmtime(source_path)
-    
+
     # Si pas de timestamp de sync, copier le fichier
     if not sync_timestamp:
         return True
-    
+
     # Comparer les timestamps
     return file_mtime > sync_timestamp
 
@@ -143,23 +143,23 @@ def find_save_files(system_id, game_name):
     """
     Cherche les fichiers de saves du jeu dans /recalbox/share/saves.
     Exemple: /recalbox/share/saves/gba/Breath of Fire.*
-    
+
     Retourne une liste de chemins complets vers les fichiers de saves.
     """
     save_files = []
-    
+
     system_save_dir = os.path.join(SHARES_SAVES_DIR, system_id)
-    
+
     if not os.path.isdir(system_save_dir):
         return save_files
-    
+
     # Chercher tous les fichiers qui commencent par le nom du jeu
     for filename in os.listdir(system_save_dir):
         if filename.startswith(game_name + "."):
             file_path = os.path.join(system_save_dir, filename)
             if os.path.isfile(file_path):
                 save_files.append(file_path)
-    
+
     return save_files
 
 
@@ -171,13 +171,13 @@ def copy_save_file(source_path, profile_name, system_id, game_name):
     # Créer le répertoire cible s'il n'existe pas
     target_dir = os.path.join(PROFILES_DIR, profile_name, system_id)
     os.makedirs(target_dir, exist_ok=True)
-    
+
     # Récupérer le nom du fichier avec son extension
     filename = os.path.basename(source_path)
-    
+
     # Chemin cible
     target_path = os.path.join(target_dir, filename)
-    
+
     try:
         shutil.copy2(source_path, target_path)
         print(f"Save copiée: {filename}")
@@ -191,58 +191,59 @@ def main():
     # Ne pas traiter le système "profiles"
     info = read_state_file()
     system_id = info.get("SystemId", "").lower()
-    
+
     if system_id == "profiles":
         return
-    
+
     # Récupérer le profil courant
     profile_name = read_current_profile()
-    
+
     if not profile_name:
         print("Aucun profil courant défini")
         return
-    
+
     # Récupérer les infos du jeu
     game_path = info.get("GamePath", "")
     game_name = get_game_name_from_path(game_path)
-    
+
     if not game_name:
         return
-    
+
     # Charger le manifest de synchronisation
     manifest = load_sync_manifest()
-    
+
     # Chercher les saves
     save_files = find_save_files(system_id, game_name)
-    
+
     if not save_files:
         # Pas de saves trouvées, c'est normal
         return
-    
-    print(f"Sauvegarde des saves pour {game_name} ({system_id}) vers profil {profile_name}")
-    
+
+    print(
+        f"Sauvegarde des saves pour {game_name} ({system_id}) vers profil {profile_name}"
+    )
+
     # Copier les saves modifiées
     current_time = datetime.now().timestamp()
-    
+
     for save_file in save_files:
         # Créer une clé unique pour ce fichier dans le manifest
         manifest_key = f"{profile_name}:{system_id}:{os.path.basename(save_file)}"
-        
+
         # Récupérer le timestamp de la dernière synchro
         last_sync = manifest.get(manifest_key, None)
-        
+
         # Vérifier si le fichier a été modifié
         if file_modified_after(save_file, last_sync):
             if copy_save_file(save_file, profile_name, system_id, game_name):
                 # Mettre à jour le manifest avec le nouveau timestamp
                 manifest[manifest_key] = current_time
-    
+
     # Sauvegarder le manifest mis à jour
     save_sync_manifest(manifest)
-    
+
     # Logger l'événement de fin du jeu
     log_event(profile_name, system_id, "GameEnd", game_name)
-
 
 
 if __name__ == "__main__":

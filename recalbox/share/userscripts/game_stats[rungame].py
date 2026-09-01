@@ -99,8 +99,10 @@ def main():
 
     active_game = current_profile.get("active_game", {})
     # Évite de compter deux fois le même lancement si Recalbox renvoie rungame.
-    if (active_game.get("system") == system_id and
-            active_game.get("game_path") == game_path):
+    if (
+        active_game.get("system") == system_id
+        and active_game.get("game_path") == game_path
+    ):
         print(f"Session déjà démarrée pour {game_name}")
         return
 
@@ -108,11 +110,14 @@ def main():
     lastplayed = datetime.now().strftime("%Y%m%dT%H%M%S")
     stats_path = os.path.join(PROFILES_DIR, profile_name, STATS_FILE_NAME)
     stats = read_json(stats_path, {})
-    game_stats = stats.setdefault(system_id, {}).setdefault(game_name, {
-        "timeplayed": 0,
-        "playcount": 0,
-        "lastplayed": lastplayed,
-    })
+    game_stats = stats.setdefault(system_id, {}).setdefault(
+        game_name,
+        {
+            "timeplayed": 0,
+            "playcount": 0,
+            "lastplayed": lastplayed,
+        },
+    )
     game_stats["playcount"] = int(game_stats.get("playcount", 0)) + 1
     game_stats.setdefault("timeplayed", 0)
     game_stats["lastplayed"] = lastplayed

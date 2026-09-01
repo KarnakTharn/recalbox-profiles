@@ -1,5 +1,6 @@
 import os
 
+
 def rotate_guest_files(base):
     """
     base = nom du profil, ex: "Profil1"
@@ -32,6 +33,7 @@ def rotate_guest_files(base):
     os.rename(TMP, C)
 
     print(f"Cycle effectué pour {base}")
+
 
 # Exemple d'utilisation :
 rotate_guest_files("Profil1")

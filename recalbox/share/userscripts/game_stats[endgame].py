@@ -82,11 +82,14 @@ def main():
     lastplayed = datetime.now().strftime("%Y%m%dT%H%M%S")
     stats_path = os.path.join(PROFILES_DIR, profile_name, STATS_FILE_NAME)
     stats = read_json(stats_path, {})
-    game_stats = stats.setdefault(system_id, {}).setdefault(game_name, {
-        "timeplayed": 0,
-        "playcount": 0,
-        "lastplayed": lastplayed,
-    })
+    game_stats = stats.setdefault(system_id, {}).setdefault(
+        game_name,
+        {
+            "timeplayed": 0,
+            "playcount": 0,
+            "lastplayed": lastplayed,
+        },
+    )
     game_stats["timeplayed"] = int(game_stats.get("timeplayed", 0)) + elapsed_seconds
     game_stats.setdefault("playcount", 0)
     game_stats["lastplayed"] = lastplayed

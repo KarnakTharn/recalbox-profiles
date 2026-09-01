@@ -34,7 +34,7 @@ REGION_SELECTED = "fr"
 REGION_OTHER = "eu"
 
 # Fichier de configuration de Recalbox
-RECALBOX_CONF  = "/recalbox/share/system/recalbox.conf"
+RECALBOX_CONF = "/recalbox/share/system/recalbox.conf"
 
 
 def log_event(log_type, system_id, action, profile):
@@ -108,7 +108,7 @@ def update_current_profile(profile_name):
     Met à jour le fichier current_profile.json avec le nouveau profil.
     """
     profile_data = {"profile": profile_name}
-    
+
     try:
         with open(CURRENT_PROFILE_FILE, "w") as f:
             json.dump(profile_data, f)
@@ -130,6 +130,7 @@ def find_retroarch_pid():
     except subprocess.CalledProcessError:
         # pgrep retourne un code d'erreur si rien n'est trouvé
         return None
+
 
 def quit_retroarch(pid):
     """
@@ -155,6 +156,7 @@ def kill_game():
     else:
         print(f"Jeu en cours trouvé avec PID : {pid}")
         quit_retroarch(pid)
+
 
 # Changement visuel de sélection de profil dans EmulationStation
 ## Changement de la region dans le fichier gamelist.xml ne fonctionne pas. Exemple region fr -> profil sélectionné et eu -> profil non sélectionné. CF archive_script/modif_xml.py
@@ -223,7 +225,9 @@ def update_gamelist_xml(profile_name):
         os.close(fd)
         tree.write(tmp_path, encoding="utf-8", xml_declaration=True)
         os.replace(tmp_path, GL_PATH)
-        print(f"[update_gamelist_region_only] gamelist mis à jour pour profil '{profile_name}'")
+        print(
+            f"[update_gamelist_region_only] gamelist mis à jour pour profil '{profile_name}'"
+        )
         return True
     except Exception as e:
         print(f"[update_gamelist_region_only] erreur écriture: {e}")
@@ -235,6 +239,7 @@ def update_gamelist_xml(profile_name):
             pass
         return False
 
+
 def load_profile_config(profile_name):
     """
     Charge la configuration générique du profil.
@@ -243,6 +248,7 @@ def load_profile_config(profile_name):
 
     with open(config_path) as f:
         return json.load(f)
+
 
 def update_recalbox_conf(recalbox_conf, mapping):
     """
@@ -267,34 +273,36 @@ def apply_RA_settings(profile_name):
     profile_config = load_profile_config(profile_name)
     mapping = profile_config.get("retroachievements", {})
     update_recalbox_conf(RECALBOX_CONF, mapping)
-    print(f"RetroAchievements mis à jour dans recalbox.conf pour le profil : {profile_name}")
-    
+    print(
+        f"RetroAchievements mis à jour dans recalbox.conf pour le profil : {profile_name}"
+    )
+
 
 def main():
     info = read_state_file()
-    
+
     # Récupérer le SystemId (peut être "profiles" ou autre)
     system_id = info.get("SystemId", "").lower()
-    
+
     # Vérifier si c'est le système de profils
     if system_id != "profiles":
         return
-    
+
     # Récupérer le nom du jeu et le chemin
     game_name = info.get("Game", "")
     game_path = info.get("GamePath", "")
-    
+
     if not game_name and not game_path:
         return
-    
+
     # Extraire le nom du profil
     profile_name = get_profile_name_from_game(game_name, game_path)
-    
+
     # Vérifier que le profil existe
     if not profile_exists(profile_name):
         print(f"Profil '{profile_name}' non trouvé dans {PROFILES_DIR}")
         return
-    
+
     # Mettre à jour le profil courant
     if update_current_profile(profile_name):
         print(f"Profil changé en: {profile_name}")
@@ -302,13 +310,17 @@ def main():
         log_event("system", system_id, "ProfileSwap", profile_name)
 
     # Terminer le jeu (qui n'est qu'un sélecteur)
-    time.sleep(5)  # Attendre un peu pour s'assurer que le jeu est bien lancé avant de le tuer
+    time.sleep(
+        5
+    )  # Attendre un peu pour s'assurer que le jeu est bien lancé avant de le tuer
     kill_game()
 
     # Mettre à jour le fichier gamelist.xml pour refléter le changement de profil (optionnel)
     ## Changement de la region dans le fichier gamelist.xml ne fonctionne pas. Exemple region fr -> profil sélectionné et eu -> profil non sélectionné. CF archive_script/modif_xml.py
     ## Changement du fichier image du profil. Exemple image en gris ou noir et blanc pour profil non sélectionné et image en couleur pour profil sélectionné.
-    time.sleep(2)  # Attendre un peu pour s'assurer que le jeu est bien terminé avant de modifier le gamelist.xml
+    time.sleep(
+        2
+    )  # Attendre un peu pour s'assurer que le jeu est bien terminé avant de modifier le gamelist.xml
     apply_RA_settings(profile_name)
     update_gamelist_xml(profile_name)
 

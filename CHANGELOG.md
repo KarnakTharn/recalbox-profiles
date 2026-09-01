@@ -17,7 +17,6 @@ Toutes les modifications importantes du projet sont documentées ici.
 
 ## [2.1.0] - 2026-08-20
 
-
 ### Ajout
 - Gestion des compte RetroAchievements (RA) en fonction du profil.
 

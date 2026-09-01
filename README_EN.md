@@ -414,6 +414,23 @@ The `profiles/<profile>/favorites.json` file contains the list of favorites to a
 - **Apply**: `swap_profile[rungame].py` — automatically applies favorites when switching profiles
 - **Utility**: `recalbox_favorites.py` — background utility (sourced from jffella's [recalbox-rom-list-manager](https://github.com/jffella/recalbox-rom-list-manager) project)
 
+### Favorites Management Procedure
+
+**Step 1: Prerequisites**
+- You must be on the correct profile
+- Make your favorites selection (or proceed to Step 2 if already done)
+
+**Step 2: Save favorites**
+> Manual favorites saving is recommended because it is not a daily action, which avoids redundant calls without creating unnecessary duplication.
+
+- Use the `ES Reboot` script (Menu → Advanced → User Scripts) to restart EmulationStation only, or perform a normal Recalbox reboot
+- After the reboot, use the `Favorites export` script (Menu → Advanced → User Scripts)
+- The JSON file will be created in the `profiles/` folder, favorites will be loaded, and EmulationStation will restart automatically
+
+**Step 3: Switch profiles**
+- Switch to a different profile
+- Repeat Steps 1 and 2
+
 ---
 
 ## 🔧 Optional Manual Scripts

@@ -40,6 +40,7 @@ recalbox/
       current_profile.json
       profiles.log
       .sync_manifest.json
+      dashboard.html
 
       Guest/
         profile_config.json
@@ -297,6 +298,7 @@ While a game is running, `current_profile.json` temporarily contains `active_gam
 - Log file: `share/profiles/profiles.log`  
 - Sync manifest: `share/profiles/.sync_manifest.json`  
 - Statistics: `share/profiles/<profile>/game_time.json`
+- Dashboard: `share/profiles/dashboard.html`
 - Profile ROMs: `share/roms/profiles/`  
 - Gamelist: `share/roms/profiles/gamelist.xml`  
 - Recalbox configuration: `share/system/recalbox.conf`  
@@ -450,6 +452,37 @@ Inside `share/userscripts/manual/`:
   - Exports the active profile's EmulationStation favorites to
     `profiles/<profile>/favorites.json`
   - Export runs only when `favorites.enabled` is set to `1`
+
+## 📊 Statistics Dashboard
+
+The `share/userscripts/manual/generate_dashboard.py` script generates an HTML dashboard from every profile's `game_time.json` file. It includes:
+
+- total play time, unique game count, most-played system, and most active profile;
+- one tab per profile with total time, launches, favorites, and system distribution;
+- the most-played games, with search and sorting by name, system, duration, or launch count;
+- a dark or light theme remembered by the browser.
+
+A profile is included when it contains `profile_config.json`. The displayed statistics come from `game_time.json`, which is produced by `game_stats[rungame].py` and `game_stats[endgame].py`. The default output file is:
+
+```text
+/recalbox/share/profiles/dashboard.html
+```
+
+Generate it on Recalbox with:
+
+```bash
+python3 /recalbox/share/userscripts/manual/generate_dashboard.py
+```
+
+Custom paths can be supplied for testing or previewing:
+
+```bash
+python3 /recalbox/share/userscripts/manual/generate_dashboard.py \
+  --profiles-dir /recalbox/share/profiles \
+  --output /recalbox/share/profiles/dashboard.html
+```
+
+Open `dashboard.html` in a browser afterward. The generator does not modify profile statistics or profile configuration.
 
 ---
 

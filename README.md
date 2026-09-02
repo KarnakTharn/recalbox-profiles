@@ -39,6 +39,7 @@ recalbox/
       current_profile.json
       profiles.log
       .sync_manifest.json
+      dashboard.html
 
       Guest/
         profile_config.json
@@ -296,6 +297,7 @@ Pendant une partie, `current_profile.json` contient temporairement `active_game`
 - Log : `share/profiles/profiles.log`  
 - Manifest : `share/profiles/.sync_manifest.json`  
 - Statistiques : `share/profiles/<profil>/game_time.json`
+- Dashboard : `share/profiles/dashboard.html`
 - ROMs de sélection : `share/roms/profiles/`  
 - Gamelist du système : `share/roms/profiles/gamelist.xml`  
 - Config Recalbox : `share/system/recalbox.conf`  
@@ -450,6 +452,38 @@ Dans `share/userscripts/manual/` :
   C'est à vous d'appliquer ces changements dans le fichier. Les outils d'édition vous permettront de faire un copier/coller ou de modifier directement le fichier.C'est à vous d'appliquer ces changements dans le fichier. Les outils d'édition vous permettront de faire un copier/coller ou de modifier directement le fichier. EmulationStation du profil actif vers
     `profiles/<profil>/favorites.json`
   - L'export est effectué seulement lorsque `favorites.enabled` vaut `1`
+
+
+## 📊 Dashboard des statistiques
+
+Le script `share/userscripts/manual/generate_dashboard.py` génère un tableau de bord HTML à partir des fichiers `game_time.json` de tous les profils. Il inclut :
+
+- le temps de jeu total, le nombre de jeux uniques, le système le plus joué et le profil le plus actif ;
+- un onglet par profil avec le temps total, les lancements, les favoris et la répartition par système ;
+- les jeux les plus joués, avec recherche et tri par nom, système, durée ou nombre de lancements ;
+- un thème sombre ou clair mémorisé dans le navigateur.
+
+Un profil est pris en compte lorsqu'il contient `profile_config.json`. Les statistiques affichées proviennent de `game_time.json` et sont produites par les scripts `game_stats[rungame].py` et `game_stats[endgame].py`. Le fichier est généré par défaut ici :
+
+```text
+/recalbox/share/profiles/dashboard.html
+```
+
+Pour le générer sur Recalbox :
+
+```bash
+python3 /recalbox/share/userscripts/manual/generate_dashboard.py
+```
+
+Des chemins personnalisés peuvent être utilisés pour un test ou une prévisualisation :
+
+```bash
+python3 /recalbox/share/userscripts/manual/generate_dashboard.py \
+  --profiles-dir /recalbox/share/profiles \
+  --output /recalbox/share/profiles/dashboard.html
+```
+
+Ouvrir ensuite `dashboard.html` dans un navigateur. Le générateur ne modifie pas les statistiques ni la configuration des profils.
 
 
 ---

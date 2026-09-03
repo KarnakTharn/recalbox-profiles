@@ -1,4 +1,13 @@
-# recalbox-profiles  
+<!-- Badges -->
+[![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
+[![GitHub release](https://img.shields.io/github/v/release/KarnakTharn/recalbox-profiles)](https://github.com/KarnakTharn/recalbox-profiles/releases)
+![GitHub all releases](https://img.shields.io/github/downloads/KarnakTharn/recalbox-profiles/total)
+![GitHub issues](https://img.shields.io/github/issues/KarnakTharn/recalbox-profiles)
+![GitHub stars](https://img.shields.io/github/stars/KarnakTharn/recalbox-profiles)
+![GitHub commit activity](https://img.shields.io/github/commit-activity/m/KarnakTharn/recalbox-profiles)
+
+
+# Recalbox Profiles  
 Advanced multi‑profile save management for Recalbox, featuring automatic profile switching, intelligent save restoration, optimized synchronization, and per‑profile RetroAchievements configuration.
 
 ![img-systems](img-systems.png)  
@@ -31,6 +40,7 @@ recalbox/
       current_profile.json
       profiles.log
       .sync_manifest.json
+      dashboard.html
 
       Guest/
         profile_config.json
@@ -202,6 +212,7 @@ This file defines the RA settings for that profile:
 ```json
 {
   "stats": {"enabled": 1},
+  "favorites": {"enabled": 1},
   "retroachievements": {
     "global.retroachievements=": "1",
     "global.retroachievements.hardcore=": "0",
@@ -287,6 +298,7 @@ While a game is running, `current_profile.json` temporarily contains `active_gam
 - Log file: `share/profiles/profiles.log`  
 - Sync manifest: `share/profiles/.sync_manifest.json`  
 - Statistics: `share/profiles/<profile>/game_time.json`
+- Dashboard: `share/profiles/dashboard.html`
 - Profile ROMs: `share/roms/profiles/`  
 - Gamelist: `share/roms/profiles/gamelist.xml`  
 - Recalbox configuration: `share/system/recalbox.conf`  
@@ -321,10 +333,105 @@ While a game is running, `current_profile.json` temporarily contains `active_gam
 ## 📝 Example Log
 
 ```text
-[system] | [2026-08-11 12:00:00] | profiles | ProfileSwap | Guest
-[Guest]  | [2026-08-11 12:05:00] | snes     | GameStart   | Super Mario World
-[Guest]  | [2026-08-11 12:45:00] | snes     | GameEnd     | Super Mario World
+2026-09-01 14:20:15 [DEBUG] swap_profile_rungame: Detection of 'profiles' system
+2026-09-01 14:20:15 [DEBUG] swap_profile_rungame: Profile detected: Guest
+2026-09-01 14:20:15 [INFO] swap_profile_rungame: Profile changed to: Guest
+2026-09-01 14:20:15 [DEBUG] swap_profile_rungame: RetroArch found (PID: 1234)
+2026-09-01 14:20:15 [DEBUG] swap_profile_rungame: SIGINT signal sent to process 1234
+2026-09-01 14:20:17 [DEBUG] swap_profile_rungame: gamelist updated for profile 'Guest'
+2026-09-01 14:20:17 [INFO] swap_profile_rungame: RetroAchievements updated in recalbox.conf for profile: Guest
+2026-09-01 14:20:17 [INFO] swap_profile_rungame: Removing all favorites...
+2026-09-01 14:20:20 [INFO] swap_profile_rungame: Favorites removed successfully
+2026-09-01 14:20:20 [INFO] swap_profile_rungame: Applying favorites for profile 'Guest'...
+2026-09-01 14:20:25 [INFO] swap_profile_rungame: Favorites applied successfully for profile 'Guest'
+2026-09-01 14:20:25 [INFO] swap_profile_rungame: EmulationStation restarted successfully
+2026-09-01 14:20:30 [INFO] load_saves_rungame: Profile 'Guest' loaded
+2026-09-01 14:20:30 [INFO] load_saves_rungame: Restoring saves for 'snes'...
+2026-09-01 14:20:31 [INFO] load_saves_rungame: Game launched: Super Mario World (snes)
+2026-09-01 14:45:00 [INFO] game_stats_endgame: Session ended for Super Mario World
+2026-09-01 14:45:00 [INFO] game_stats_endgame: Play time: 1500 seconds (25 min)
+2026-09-01 14:45:00 [INFO] save_profile_endgame: Synchronizing saves for profile 'Guest'
+2026-09-01 14:45:02 [INFO] save_profile_endgame: 1 file(s) modified and synchronized
 ```
+
+---
+
+## 🎯 Per-profile Favorites Management
+
+Each profile can independently manage its own EmulationStation favorites.
+
+### Configuration
+
+The `favorites` section in `profile_config.json` enables or disables this feature:
+
+```json
+{
+  "favorites": {"enabled": 1}
+}
+```
+
+- `1`: favorites management is active for this profile
+- `0`: favorites management is disabled; existing favorites are not modified
+
+### Behavior when switching profiles
+
+#### ✅ `favorites.enabled = 1` (Active)
+
+**Case 1: `favorites.json` file is not empty (Profil1)**
+- All current favorites are removed (cleanup)
+- Profile favorites are applied from `profiles/<profile>/favorites.json`
+- EmulationStation restarts to reload the list
+
+**Case 2: `favorites.json` file is empty (Guest)**
+- All current favorites are removed (reset)
+- No new favorites are applied
+- EmulationStation restarts
+
+#### ❌ `favorites.enabled = 0` (Inactive)
+
+- No action is taken
+- Existing favorites are preserved
+- No EmulationStation restart
+- Useful for temporary or guest profiles
+
+### `favorites.json` file
+
+The `profiles/<profile>/favorites.json` file contains the list of favorites to apply:
+
+```json
+{
+  "snes": [
+    "Super Mario World",
+    "The Legend of Zelda: A Link to the Past"
+  ],
+  "megadrive": [
+    "Sonic The Hedgehog 2"
+  ]
+}
+```
+
+### Associated scripts
+
+- **Export**: `Favorites export(sync).py` — exports current favorites to `favorites.json`
+- **Apply**: `swap_profile[rungame].py` — automatically applies favorites when switching profiles
+- **Utility**: `recalbox_favorites.py` — background utility (sourced from jffella's [recalbox-rom-list-manager](https://github.com/jffella/recalbox-rom-list-manager) project)
+
+### Favorites Management Procedure
+
+**Step 1: Prerequisites**
+- You must be on the correct profile
+- Make your favorites selection (or proceed to Step 2 if already done)
+
+**Step 2: Save favorites**
+> Manual favorites saving is recommended because it is not a daily action, which avoids redundant calls without creating unnecessary duplication.
+
+- Use the `ES Reboot` script (Menu → Advanced → User Scripts) to restart EmulationStation only, or perform a normal Recalbox reboot
+- After the reboot, use the `Favorites export` script (Menu → Advanced → User Scripts)
+- The JSON file will be created in the `profiles/` folder, favorites will be loaded, and EmulationStation will restart automatically
+
+**Step 3: Switch profiles**
+- Switch to a different profile
+- Repeat Steps 1 and 2
 
 ---
 
@@ -341,6 +448,42 @@ Inside `share/userscripts/manual/`:
   - Manually save current files  
   - Force a full synchronization  
 
+- `Favorites export(sync).py`
+  - Exports the active profile's EmulationStation favorites to
+    `profiles/<profile>/favorites.json`
+  - Export runs only when `favorites.enabled` is set to `1`
+
+## 📊 Statistics Dashboard
+
+The `share/userscripts/manual/generate_dashboard.py` script generates an HTML dashboard from every profile's `game_time.json` file. It includes:
+
+- total play time, unique game count, most-played system, and most active profile;
+- one tab per profile with total time, launches, favorites, and system distribution;
+- the most-played games, with search and sorting by name, system, duration, or launch count;
+- a dark or light theme remembered by the browser.
+
+A profile is included when it contains `profile_config.json`. The displayed statistics come from `game_time.json`, which is produced by `game_stats[rungame].py` and `game_stats[endgame].py`. The default output file is:
+
+```text
+/recalbox/share/profiles/dashboard.html
+```
+
+Generate it on Recalbox with:
+
+```bash
+python3 /recalbox/share/userscripts/manual/generate_dashboard.py
+```
+
+Custom paths can be supplied for testing or previewing:
+
+```bash
+python3 /recalbox/share/userscripts/manual/generate_dashboard.py \
+  --profiles-dir /recalbox/share/profiles \
+  --output /recalbox/share/profiles/dashboard.html
+```
+
+Open `dashboard.html` in a browser afterward. The generator does not modify profile statistics or profile configuration.
+
 ---
 
 ## 🛡️ Notes
@@ -349,3 +492,5 @@ Inside `share/userscripts/manual/`:
 - The `profiles` system must be ignored by save/load scripts  
 - `current_profile.json` must exist and be valid  
 - Ensure write permissions on `share/profiles/` and `share/saves/`
+
+License: GPLv3

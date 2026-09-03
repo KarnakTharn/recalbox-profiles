@@ -1,6 +1,9 @@
 {
   "stats": {
-    "enabled": 1
+    "enabled": 0
+  },
+  "favorites": {
+    "enabled": 0
   },
   "retroachievements": {
     "global.retroachievements=": "0",

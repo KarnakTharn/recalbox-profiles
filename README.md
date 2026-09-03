@@ -1,4 +1,13 @@
-# recalbox-profiles  
+<!-- Badges -->
+[![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
+[![GitHub release](https://img.shields.io/github/v/release/KarnakTharn/recalbox-profiles)](https://github.com/KarnakTharn/recalbox-profiles/releases)
+![GitHub all releases](https://img.shields.io/github/downloads/KarnakTharn/recalbox-profiles/total)
+![GitHub issues](https://img.shields.io/github/issues/KarnakTharn/recalbox-profiles)
+![GitHub stars](https://img.shields.io/github/stars/KarnakTharn/recalbox-profiles)
+![GitHub commit activity](https://img.shields.io/github/commit-activity/m/KarnakTharn/recalbox-profiles)
+
+
+# Recalbox Profiles    
 Gestion avancée des profils de sauvegarde pour Recalbox, avec sélection automatique de profil, restauration intelligente des saves, synchronisation optimisée et configuration indépendante des RetroAchievements.
 
 ![img-systems](img-systems.png)  
@@ -30,6 +39,7 @@ recalbox/
       current_profile.json
       profiles.log
       .sync_manifest.json
+      dashboard.html
 
       Guest/
         profile_config.json
@@ -201,6 +211,7 @@ Ce fichier définit les paramètres RA propres au profil :
 ```json
 {
   "stats": {"enabled": 1},
+  "favorites": {"enabled": 1},
   "retroachievements": {
     "global.retroachievements=": "1",
     "global.retroachievements.hardcore=": "0",
@@ -286,6 +297,7 @@ Pendant une partie, `current_profile.json` contient temporairement `active_game`
 - Log : `share/profiles/profiles.log`  
 - Manifest : `share/profiles/.sync_manifest.json`  
 - Statistiques : `share/profiles/<profil>/game_time.json`
+- Dashboard : `share/profiles/dashboard.html`
 - ROMs de sélection : `share/roms/profiles/`  
 - Gamelist du système : `share/roms/profiles/gamelist.xml`  
 - Config Recalbox : `share/system/recalbox.conf`  
@@ -320,10 +332,105 @@ Pendant une partie, `current_profile.json` contient temporairement `active_game`
 ## 📝 Exemple de log
 
 ```text
-[system] | [2026-08-11 12:00:00] | profiles | ProfileSwap | Guest
-[Guest]  | [2026-08-11 12:05:00] | snes     | GameStart   | Super Mario World
-[Guest]  | [2026-08-11 12:45:00] | snes     | GameEnd     | Super Mario World
+2026-09-01 14:20:15 [DEBUG] swap_profile_rungame: Détection du système 'profiles'
+2026-09-01 14:20:15 [DEBUG] swap_profile_rungame: Profil détecté : Guest
+2026-09-01 14:20:15 [INFO] swap_profile_rungame: Profil changé en: Guest
+2026-09-01 14:20:15 [DEBUG] swap_profile_rungame: RetroArch trouvé (PID: 1234)
+2026-09-01 14:20:15 [DEBUG] swap_profile_rungame: Signal SIGINT envoyé au processus 1234
+2026-09-01 14:20:17 [DEBUG] swap_profile_rungame: gamelist mis à jour pour profil 'Guest'
+2026-09-01 14:20:17 [INFO] swap_profile_rungame: RetroAchievements mis à jour dans recalbox.conf pour le profil : Guest
+2026-09-01 14:20:17 [INFO] swap_profile_rungame: Retrait de tous les favoris...
+2026-09-01 14:20:20 [INFO] swap_profile_rungame: Favoris retirés avec succès
+2026-09-01 14:20:20 [INFO] swap_profile_rungame: Application des favoris pour le profil 'Guest'...
+2026-09-01 14:20:25 [INFO] swap_profile_rungame: Favoris appliqués avec succès pour le profil 'Guest'
+2026-09-01 14:20:25 [INFO] swap_profile_rungame: EmulationStation redémarré avec succès
+2026-09-01 14:20:30 [INFO] load_saves_rungame: Profil 'Guest' chargé
+2026-09-01 14:20:30 [INFO] load_saves_rungame: Restauration des saves pour 'snes'...
+2026-09-01 14:20:31 [INFO] load_saves_rungame: Jeu lancé : Super Mario World (snes)
+2026-09-01 14:45:00 [INFO] game_stats_endgame: Session terminée pour Super Mario World
+2026-09-01 14:45:00 [INFO] game_stats_endgame: Temps de jeu : 1500 secondes (25 min)
+2026-09-01 14:45:00 [INFO] save_profile_endgame: Synchronisation des saves du profil 'Guest'
+2026-09-01 14:45:02 [INFO] save_profile_endgame: 1 fichier(s) modifié(s) synchronisé(s)
 ```
+
+---
+
+## 🎯 Gestion des Favoris par profil
+
+Chaque profil peut gérer ses propres favoris EmulationStation de manière indépendante.
+
+### Configuration
+
+La section `favorites` de `profile_config.json` active ou désactive le suivi :
+
+```json
+{
+  "favorites": {"enabled": 1}
+}
+```
+
+- `1` : gestion active des favoris pour ce profil
+- `0` : gestion désactivée, les favoris existants ne sont pas modifiés
+
+### Comportement lors du changement de profil
+
+#### ✅ `favorites.enabled = 1` (Actif)
+
+**Cas 1 : Fichier `favorites.json` n'est pas vide (Profil1)**
+- Tous les favoris actuels sont retirés (nettoyage)
+- Les favoris du profil sont appliqués depuis `profiles/<profil>/favorites.json`
+- EmulationStation redémarre pour recharger la liste
+
+**Cas 2 : Fichier `favorites.json` est vide (Guest)**
+- Tous les favoris actuels sont retirés (réinitialisation)
+- Aucun nouveau favori n'est appliqué
+- EmulationStation redémarre
+
+#### ❌ `favorites.enabled = 0` (Inactif)
+
+- Aucune action n'est effectuée
+- Les favoris existants sont conservés
+- Pas de redémarrage d'EmulationStation
+- Utile pour les profils temporaires ou invité
+
+### Fichier `favorites.json`
+
+Le fichier `profiles/<profil>/favorites.json` contient la liste des favoris à appliquer :
+
+```json
+{
+  "snes": [
+    "Super Mario World",
+    "The Legend of Zelda: A Link to the Past"
+  ],
+  "megadrive": [
+    "Sonic The Hedgehog 2"
+  ]
+}
+```
+
+### Scripts associés
+
+- **Export** : `Favorites export(sync).py` — exporte les favoris actuels vers `favorites.json`
+- **Apply** : `swap_profile[rungame].py` — applique automatiquement les favoris lors du changement de profil
+- **Utility** : `recalbox_favorites.py` — utilitaire utilisé en arrière-plan (provient du projet [recalbox-rom-list-manager](https://github.com/jffella/recalbox-rom-list-manager) de jffella)
+
+### Procédure de gestion des favoris
+
+**Étape 1 : Prérequis**
+- Vous devez être sur le bon profil
+- Effectuez votre sélection de favoris (ou passez à l'étape 2 si elle est déjà effectuée)
+
+**Étape 2 : Sauvegarder les favoris**
+> La sauvegarde manuelle des favoris est recommandée car elle n'est pas une action quotidienne, ce qui évite les appels répétitifs sans créer de redondance inutile.
+
+- Utilisez le script `ES Reboot` (Menu → Avancé → Scripts utilisateur) pour redémarrer EmulationStation uniquement, ou effectuez un redémarrage normal de Recalbox
+- Après le redémarrage, utilisez le script `Favorites export` (Menu → Avancé → Scripts utilisateur)
+- Le fichier JSON sera créé dans le dossier `profiles/`, les favoris seront chargés et EmulationStation redémarrera automatiquement
+
+**Étape 3 : Changer de profil**
+- Changez de profil
+- Répétez les étapes 1 et 2
 
 ---
 
@@ -340,6 +447,45 @@ Dans `share/userscripts/manual/` :
   - Sauvegarder manuellement les saves actuelles  
   - Forcer une synchronisation complète  
 
+- `Favorites export(sync).py`
+  - Exporte les   
+  C'est à vous d'appliquer ces changements dans le fichier. Les outils d'édition vous permettront de faire un copier/coller ou de modifier directement le fichier.C'est à vous d'appliquer ces changements dans le fichier. Les outils d'édition vous permettront de faire un copier/coller ou de modifier directement le fichier. EmulationStation du profil actif vers
+    `profiles/<profil>/favorites.json`
+  - L'export est effectué seulement lorsque `favorites.enabled` vaut `1`
+
+
+## 📊 Dashboard des statistiques
+
+Le script `share/userscripts/manual/generate_dashboard.py` génère un tableau de bord HTML à partir des fichiers `game_time.json` de tous les profils. Il inclut :
+
+- le temps de jeu total, le nombre de jeux uniques, le système le plus joué et le profil le plus actif ;
+- un onglet par profil avec le temps total, les lancements, les favoris et la répartition par système ;
+- les jeux les plus joués, avec recherche et tri par nom, système, durée ou nombre de lancements ;
+- un thème sombre ou clair mémorisé dans le navigateur.
+
+Un profil est pris en compte lorsqu'il contient `profile_config.json`. Les statistiques affichées proviennent de `game_time.json` et sont produites par les scripts `game_stats[rungame].py` et `game_stats[endgame].py`. Le fichier est généré par défaut ici :
+
+```text
+/recalbox/share/profiles/dashboard.html
+```
+
+Pour le générer sur Recalbox :
+
+```bash
+python3 /recalbox/share/userscripts/manual/generate_dashboard.py
+```
+
+Des chemins personnalisés peuvent être utilisés pour un test ou une prévisualisation :
+
+```bash
+python3 /recalbox/share/userscripts/manual/generate_dashboard.py \
+  --profiles-dir /recalbox/share/profiles \
+  --output /recalbox/share/profiles/dashboard.html
+```
+
+Ouvrir ensuite `dashboard.html` dans un navigateur. Le générateur ne modifie pas les statistiques ni la configuration des profils.
+
+
 ---
 
 ## 🛡️ Remarques
@@ -348,3 +494,5 @@ Dans `share/userscripts/manual/` :
 - Le système `profiles` doit être ignoré dans les scripts de save/load  
 - `current_profile.json` doit exister et être valide  
 - Vérifier les permissions d’écriture sur `share/profiles/` et `share/saves/`  
+
+License: GPLv3

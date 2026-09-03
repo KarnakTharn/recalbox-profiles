@@ -2,6 +2,9 @@
   "stats": {
     "enabled": 1
   },
+  "favorites": {
+    "enabled": 1
+  },
   "retroachievements": {
     "global.retroachievements=": "1",
     "global.retroachievements.hardcore=": "0",

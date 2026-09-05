@@ -153,7 +153,7 @@ def copy_save_file(source_path, profile_name, system_id, game_name):
     Crée les répertoires s'il le faut.
     """
     # Créer le répertoire cible s'il n'existe pas
-    target_dir = os.path.join(PROFILES_DIR, profile_name, system_id)
+    target_dir = os.path.join(PROFILES_DIR, profile_name, "roms", system_id)
     os.makedirs(target_dir, exist_ok=True)
 
     # Récupérer le nom du fichier avec son extension

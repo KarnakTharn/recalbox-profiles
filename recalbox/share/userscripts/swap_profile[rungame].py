@@ -116,6 +116,12 @@ def save_screenshots(profile_name):
     os.makedirs(target_dir, exist_ok=True)
 
     try:
+        # Nettoyage du dossier screenshots du profil avant sauvegarde
+        for filename in os.listdir(target_dir):
+            file_path = os.path.join(target_dir, filename)
+            if os.path.isfile(file_path):
+                os.remove(file_path)
+
         for filename in os.listdir(RECALBOX_SCREENSHOTS_DIR):
             src_path = os.path.join(RECALBOX_SCREENSHOTS_DIR, filename)
             if os.path.isfile(src_path):

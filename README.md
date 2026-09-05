@@ -7,7 +7,11 @@
 ![GitHub commit activity](https://img.shields.io/github/commit-activity/m/KarnakTharn/recalbox-profiles)
 
 
-# Recalbox Profiles    
+# Recalbox Profiles 
+  
+Compatible  
+[![Recalbox](https://img.shields.io/badge/Recalbox-10.0.8-purple)](https://www.recalbox.com/fr/)  
+
 Gestion avancée des profils de sauvegarde pour Recalbox, avec sélection automatique de profil, restauration intelligente des saves, synchronisation optimisée et configuration indépendante des RetroAchievements.
 
 ![img-systems](img-systems.png)  

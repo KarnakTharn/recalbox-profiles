@@ -4,10 +4,12 @@
 ![GitHub all releases](https://img.shields.io/github/downloads/KarnakTharn/recalbox-profiles/total)
 ![GitHub issues](https://img.shields.io/github/issues/KarnakTharn/recalbox-profiles)
 ![GitHub stars](https://img.shields.io/github/stars/KarnakTharn/recalbox-profiles)
-![GitHub commit activity](https://img.shields.io/github/commit-activity/m/KarnakTharn/recalbox-profiles)
 
+# Recalbox Profiles 
+  
+Compatible  
+[![Recalbox](https://img.shields.io/badge/Recalbox-10.0.8-purple)](https://www.recalbox.com/fr/)  
 
-# Recalbox Profiles  
 Advanced multi‑profile save management for Recalbox, featuring automatic profile switching, intelligent save restoration, optimized synchronization, and per‑profile RetroAchievements configuration.
 
 ![img-systems](img-systems.png)  

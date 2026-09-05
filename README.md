@@ -4,8 +4,6 @@
 ![GitHub all releases](https://img.shields.io/github/downloads/KarnakTharn/recalbox-profiles/total)
 ![GitHub issues](https://img.shields.io/github/issues/KarnakTharn/recalbox-profiles)
 ![GitHub stars](https://img.shields.io/github/stars/KarnakTharn/recalbox-profiles)
-![GitHub commit activity](https://img.shields.io/github/commit-activity/m/KarnakTharn/recalbox-profiles)
-
 
 # Recalbox Profiles 
   

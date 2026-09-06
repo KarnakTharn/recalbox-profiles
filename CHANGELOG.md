@@ -2,6 +2,13 @@
 
 Toutes les modifications importantes du projet sont documentées ici.
 
+## [2.5.0] - 2026-09-06
+
+### Ajout
+- Gestion des comptes Patreon par profil : injection automatique de la clé privée dans `recalbox.conf` lors du changement de profil.
+- Procédure de récupération manuelle de la clé Patreon pour la première installation.
+- Compatibilité avec Recalbox 10.1 (testée et vérifiée après migration depuis la version 10.0.8).
+
 ## [2.4.0] - 2026-09-06
 
 ### Ajout

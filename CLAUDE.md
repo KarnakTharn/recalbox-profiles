@@ -5,7 +5,7 @@
 This repository is a deployable overlay for Recalbox, not a conventional Python package. Preserve the target layout under `recalbox/share/`: copy its contents to `/recalbox/share/` on the device.
 
 - `recalbox/share/userscripts/`: event-driven Python scripts. The filename suffix selects the EmulationStation event, for example `game_stats[rungame].py` or `save_profile[endgame].py`.
-- `recalbox/share/profiles/<profile>/`: per-player configuration (`profile_config.json`) and generated data (`game_time.json`, optional `favorites.json`). `recalbox/share/profiles/dashboard.html` is the generated statistics dashboard. Do not commit real RetroAchievements credentials.
+- `recalbox/share/profiles/<profile>/`: per-player configuration (`profile_config.json`) and generated data (`game_time.json`, optional `favorites.json`). `recalbox/share/profiles/dashboard.html` is the generated statistics dashboard. Do not commit real RetroAchievements or Patreon credentials.
 - `recalbox/share/roms/profiles/`, `system/`, and `themes/`: profile selector ROMs, the custom system definition, and Recalbox Next theme integration.
 - `images_store/`: source visual assets. `archive_script/` contains historical utilities, not active runtime code.
 - `README.md`, `README_EN.md`, and `CHANGELOG.md`: user-facing French/English documentation and release notes.

@@ -319,18 +319,37 @@ def load_profile_config(profile_name):
 
 def update_recalbox_conf(recalbox_conf, mapping):
     """
-    Met à jour recalbox.conf avec les valeurs RetroAchievements du profil.
+    Met à jour recalbox.conf avec les valeurs du profil.
+    Ajoute les clés manquantes à la fin du fichier.
     """
     with open(recalbox_conf) as f:
         lignes = f.readlines()
 
+    updated_keys = set()
+    new_lignes = []
+
+    for ligne in lignes:
+        match_found = False
+        for cle, valeur in mapping.items():
+            if ligne.startswith(cle):
+                new_lignes.append(f"{cle}{valeur}\n")
+                updated_keys.add(cle)
+                match_found = True
+                break
+        if not match_found:
+            new_lignes.append(ligne)
+
+    # Ajouter les clés qui n'ont pas été trouvées
+    for cle, valeur in mapping.items():
+        if cle not in updated_keys:
+            # Assurer que le fichier se termine par un saut de ligne avant d'ajouter
+            if new_lignes and not new_lignes[-1].endswith("\n"):
+                new_lignes[-1] += "\n"
+            new_lignes.append(f"{cle}{valeur}\n")
+
     with open(recalbox_conf, "w") as f:
-        for ligne in lignes:
-            for cle, valeur in mapping.items():
-                if ligne.startswith(cle):
-                    ligne = f"{cle}{valeur}\n"
-                    break
-            f.write(ligne)
+        f.writelines(new_lignes)
+
 
 
 def apply_RA_settings(profile_name):
@@ -344,6 +363,27 @@ def apply_RA_settings(profile_name):
         "RetroAchievements mis à jour dans recalbox.conf pour le profil : %s",
         profile_name,
     )
+
+
+def apply_patreon_settings(profile_name):
+    """
+    Applique les paramètres Patreon du profil dans recalbox.conf.
+    """
+    profile_config = load_profile_config(profile_name)
+    patreon_config = profile_config.get("patreon", {})
+
+    # Si activé, on utilise la clé, sinon on laisse vide
+    key_value = ""
+    if patreon_config.get("enabled"):
+        key_value = patreon_config.get("privatekey", "")
+
+    mapping = {"patron.privatekey=": key_value}
+    update_recalbox_conf(RECALBOX_CONF, mapping)
+    LOGGER.info(
+        "Paramètres Patreon mis à jour dans recalbox.conf pour le profil : %s",
+        profile_name,
+    )
+
 
 
 def apply_favorites_settings(profile_name):
@@ -477,6 +517,7 @@ def main():
         2
     )  # Attendre un peu pour s'assurer que le jeu est bien terminé avant de modifier le gamelist.xml
     apply_RA_settings(profile_name)
+    apply_patreon_settings(profile_name)
     update_gamelist_xml(profile_name)
     time.sleep(
         5

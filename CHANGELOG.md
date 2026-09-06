@@ -2,6 +2,12 @@
 
 Toutes les modifications importantes du projet sont documentées ici.
 
+## [2.4.0] - 2026-09-06
+
+### Ajout
+- Gestion des captures d'écran par profil : sauvegarde automatique des screenshots du dossier global vers le dossier du profil.
+- Nettoyage automatique du dossier de screenshots du profil avant chaque sauvegarde pour éviter les fichiers obsolètes.
+
 ## [2.3.0] - 2026-09-01
 
 ### Ajout

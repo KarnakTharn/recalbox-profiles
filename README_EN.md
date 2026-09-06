@@ -4,10 +4,12 @@
 ![GitHub all releases](https://img.shields.io/github/downloads/KarnakTharn/recalbox-profiles/total)
 ![GitHub issues](https://img.shields.io/github/issues/KarnakTharn/recalbox-profiles)
 ![GitHub stars](https://img.shields.io/github/stars/KarnakTharn/recalbox-profiles)
-![GitHub commit activity](https://img.shields.io/github/commit-activity/m/KarnakTharn/recalbox-profiles)
 
+# Recalbox Profiles 
+  
+Compatible  
+[![Recalbox](https://img.shields.io/badge/Recalbox-10.0.8-purple)](https://www.recalbox.com/fr/)  
 
-# Recalbox Profiles  
 Advanced multi‑profile save management for Recalbox, featuring automatic profile switching, intelligent save restoration, optimized synchronization, and per‑profile RetroAchievements configuration.
 
 ![img-systems](img-systems.png)  
@@ -25,6 +27,7 @@ Each profile has:
 - its own RA mode (normal / hardcore)  
 - its own synchronization manifest  
 - its own identity inside EmulationStation  
+- its own screenshots (`screenshots/`)  
 
 The active profile is selected through a custom system in EmulationStation.  
 Save files are automatically restored when launching a game and synchronized when exiting.
@@ -44,13 +47,17 @@ recalbox/
 
       Guest/
         profile_config.json
-        megadrive/
-          Aladdin.state
+        screenshots/
+        roms/
+          megadrive/
+            Aladdin.state
 
       Profil1/
         profile_config.json
-        gba/
-          Breath of Fire.srm
+        screenshots/
+        roms/
+          gba/
+            Breath of Fire.srm
 
     saves/
       megadrive/
@@ -150,6 +157,7 @@ Requires write access to the system partition.
 - Detects when a ROM from the `profiles` system is launched  
 - Extracts the profile name  
 - Updates `current_profile.json`  
+- Manages screenshots: backs up current profile's captures, clears global folder, and loads new profile's captures  
 - Terminates RetroArch to return to EmulationStation  
 - Logs the profile switch  
 - Updates the gamelist (region or images)  
@@ -297,6 +305,7 @@ While a game is running, `current_profile.json` temporarily contains `active_gam
 - Active profile: `share/profiles/current_profile.json`  
 - Log file: `share/profiles/profiles.log`  
 - Sync manifest: `share/profiles/.sync_manifest.json`  
+- Screenshots: `share/profiles/<profile>/screenshots/`  
 - Statistics: `share/profiles/<profile>/game_time.json`
 - Dashboard: `share/profiles/dashboard.html`
 - Profile ROMs: `share/roms/profiles/`  

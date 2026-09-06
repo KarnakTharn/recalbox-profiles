@@ -4,10 +4,12 @@
 ![GitHub all releases](https://img.shields.io/github/downloads/KarnakTharn/recalbox-profiles/total)
 ![GitHub issues](https://img.shields.io/github/issues/KarnakTharn/recalbox-profiles)
 ![GitHub stars](https://img.shields.io/github/stars/KarnakTharn/recalbox-profiles)
-![GitHub commit activity](https://img.shields.io/github/commit-activity/m/KarnakTharn/recalbox-profiles)
 
+# Recalbox Profiles 
+  
+Compatible  
+[![Recalbox](https://img.shields.io/badge/Recalbox-10.0.8-purple)](https://www.recalbox.com/fr/)  
 
-# Recalbox Profiles    
 Gestion avancée des profils de sauvegarde pour Recalbox, avec sélection automatique de profil, restauration intelligente des saves, synchronisation optimisée et configuration indépendante des RetroAchievements.
 
 ![img-systems](img-systems.png)  
@@ -24,6 +26,7 @@ Ce projet permet d’utiliser **plusieurs profils indépendants** dans Recalbox,
 - son propre état de synchronisation  
 - son propre compte RA (username/password)  
 - son propre mode RA (normal / hardcore)
+- ses propres captures d'écran (`screenshots/`)
 
 Le profil actif est sélectionné via un système custom dans EmulationStation.  
 Les saves sont automatiquement restaurées au lancement d’un jeu et synchronisées à la fin.
@@ -43,13 +46,18 @@ recalbox/
 
       Guest/
         profile_config.json
-        megadrive/
-          Aladdin.state
+        screenshots/
+        roms/
+          megadrive/
+            Aladdin.state
+
 
       Profil1/
         profile_config.json
-        gba/
-          Breath of Fire.srm
+        screenshots/
+        roms/
+          gba/
+            Breath of Fire.srm
 
     saves/
       megadrive/
@@ -149,6 +157,7 @@ Nécessite un accès en écriture à la partition système.
 - Détecte le lancement d’une ROM du système `profiles`
 - Extrait le nom du profil
 - Met à jour `current_profile.json`
+- Gère les captures d'écran : sauvegarde les screenshots du profil actuel, vide le dossier global, et charge ceux du nouveau profil
 - Termine RetroArch pour revenir à EmulationStation
 - Log l’événement dans `profiles.log`
 - Met à jour la gamelist (`region` ou images)
@@ -296,6 +305,7 @@ Pendant une partie, `current_profile.json` contient temporairement `active_game`
 - Profil actif : `share/profiles/current_profile.json`  
 - Log : `share/profiles/profiles.log`  
 - Manifest : `share/profiles/.sync_manifest.json`  
+- Screenshots : `share/profiles/<profil>/screenshots/`  
 - Statistiques : `share/profiles/<profil>/game_time.json`
 - Dashboard : `share/profiles/dashboard.html`
 - ROMs de sélection : `share/roms/profiles/`  

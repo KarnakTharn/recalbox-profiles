@@ -79,12 +79,12 @@ def get_game_name_from_path(game_path):
 def find_save_files(profile_name, system_id, game_name):
     """
     Cherche les saves du profil pour ce jeu :
-    /recalbox/share/profiles/<profil>/<system>/<jeu>.*
+    /recalbox/share/profiles/<profil>/roms/<system>/<jeu>.*
 
     Retourne une liste de fichiers trouvés.
     """
     save_files = []
-    profile_game_dir = os.path.join(PROFILES_DIR, profile_name, system_id)
+    profile_game_dir = os.path.join(PROFILES_DIR, profile_name, "roms", system_id)
 
     if not os.path.isdir(profile_game_dir):
         return save_files

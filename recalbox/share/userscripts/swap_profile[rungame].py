@@ -29,6 +29,9 @@ CURRENT_PROFILE_FILE = "/recalbox/share/profiles/current_profile.json"
 # Dossier des profils disponibles
 PROFILES_DIR = "/recalbox/share/profiles"
 
+# Dossiers des screenshots
+RECALBOX_SCREENSHOTS_DIR = "/recalbox/share/screenshots"
+
 # Fichier gamelist.xml pour les profils
 GL_PATH = "/recalbox/share/roms/profiles/gamelist.xml"
 BACKUP_PATH = GL_PATH + ".bak"
@@ -85,6 +88,83 @@ def profile_exists(profile_name):
     """
     profile_path = os.path.join(PROFILES_DIR, profile_name)
     return os.path.isdir(profile_path)
+
+
+def read_current_profile():
+    """
+    Lit le fichier current_profile.json et retourne le nom du profil.
+    """
+    if not os.path.exists(CURRENT_PROFILE_FILE):
+        return None
+    try:
+        with open(CURRENT_PROFILE_FILE, "r") as f:
+            data = json.load(f)
+            return data.get("profile", None)
+    except Exception as e:
+        LOGGER.error("Erreur lors de la lecture du profil courant: %s", e)
+        return None
+
+
+def save_screenshots(profile_name):
+    """
+    Sauvegarde les screenshots du dossier global vers le dossier du profil.
+    """
+    if not profile_name:
+        return
+
+    target_dir = os.path.join(PROFILES_DIR, profile_name, "screenshots")
+    os.makedirs(target_dir, exist_ok=True)
+
+    try:
+        # Nettoyage du dossier screenshots du profil avant sauvegarde
+        for filename in os.listdir(target_dir):
+            file_path = os.path.join(target_dir, filename)
+            if os.path.isfile(file_path):
+                os.remove(file_path)
+
+        for filename in os.listdir(RECALBOX_SCREENSHOTS_DIR):
+            src_path = os.path.join(RECALBOX_SCREENSHOTS_DIR, filename)
+            if os.path.isfile(src_path):
+                copy2(src_path, os.path.join(target_dir, filename))
+        LOGGER.debug("Screenshots sauvegardés pour le profil %s", profile_name)
+    except Exception as e:
+        LOGGER.error("Erreur lors de la sauvegarde des screenshots: %s", e)
+
+
+def clear_screenshots():
+    """
+    Supprime toutes les images du dossier screenshots global.
+    """
+    try:
+        for filename in os.listdir(RECALBOX_SCREENSHOTS_DIR):
+            file_path = os.path.join(RECALBOX_SCREENSHOTS_DIR, filename)
+            if os.path.isfile(file_path):
+                os.remove(file_path)
+        LOGGER.debug("Dossier screenshots global nettoyé")
+    except Exception as e:
+        LOGGER.error("Erreur lors du nettoyage des screenshots: %s", e)
+
+
+def load_screenshots(profile_name):
+    """
+    Charge les screenshots du profil vers le dossier global.
+    """
+    if not profile_name:
+        return
+
+    src_dir = os.path.join(PROFILES_DIR, profile_name, "screenshots")
+    if not os.path.isdir(src_dir):
+        LOGGER.debug("Aucun screenshot trouvé pour le profil %s", profile_name)
+        return
+
+    try:
+        for filename in os.listdir(src_dir):
+            src_path = os.path.join(src_dir, filename)
+            if os.path.isfile(src_path):
+                copy2(src_path, os.path.join(RECALBOX_SCREENSHOTS_DIR, filename))
+        LOGGER.debug("Screenshots chargés pour le profil %s", profile_name)
+    except Exception as e:
+        LOGGER.error("Erreur lors du chargement des screenshots: %s", e)
 
 
 def update_current_profile(profile_name):
@@ -371,9 +451,18 @@ def main():
         LOGGER.error("Profil '%s' non trouvé dans %s", profile_name, PROFILES_DIR)
         return
 
+    # Gestion des screenshots (sauvegarde profil précédent, nettoyage, chargement nouveau profil)
+    old_profile = read_current_profile()
+    if old_profile:
+        save_screenshots(old_profile)
+    clear_screenshots()
+
     # Mettre à jour le profil courant
     if update_current_profile(profile_name):
         LOGGER.info("Profil changé en: %s", profile_name)
+
+    # Charger les screenshots du nouveau profil
+    load_screenshots(profile_name)
 
     # Terminer le jeu (qui n'est qu'un sélecteur)
     time.sleep(

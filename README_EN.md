@@ -8,7 +8,7 @@
 # Recalbox Profiles 
   
 Compatible  
-[![Recalbox](https://img.shields.io/badge/Recalbox-10.0.8-purple)](https://www.recalbox.com/fr/)  
+[![Recalbox](https://img.shields.io/badge/Recalbox-10.1-purple)](https://www.recalbox.com/fr/)  
 
 Advanced multi‑profile save management for Recalbox, featuring automatic profile switching, intelligent save restoration, optimized synchronization, and per‑profile RetroAchievements configuration.
 
@@ -23,7 +23,8 @@ This project enables **multiple independent save profiles** on Recalbox.
 Each profile has:
 
 - its own save files  
-- its own RetroAchievements (RA) account configuration  
+- its own RetroAchievements (RA) account configuration
+- its own Patreon account (private key)  
 - its own RA mode (normal / hardcore)  
 - its own synchronization manifest  
 - its own identity inside EmulationStation  
@@ -51,6 +52,7 @@ recalbox/
         roms/
           megadrive/
             Aladdin.state
+
 
       Profil1/
         profile_config.json
@@ -161,7 +163,7 @@ Requires write access to the system partition.
 - Terminates RetroArch to return to EmulationStation  
 - Logs the profile switch  
 - Updates the gamelist (region or images)  
-- **Applies the profile’s RetroAchievements configuration to `recalbox.conf`**
+- **Applies the profile’s RetroAchievements and Patreon configuration to recalbox.conf**
 
 ---
 
@@ -258,6 +260,36 @@ global.retroachievements.password=
 - `profile_config.json` is the **single source of truth** for RA settings and profile options
 
 NB: The information from the RA account is correctly applied even if the change is not visible in the menu/option on Recalbox (request a reboot), however if we look at the RA account in the Recalbox Manager (Web), the change has been made.
+
+---
+
+## 💎 Patreon Account Management
+
+The system also allows managing the Patreon private key per profile.
+
+### ✔ Automatic application
+
+When a profile is selected, the script updates the following line in `/recalbox/share/system/recalbox.conf`:
+`patron.privatekey=<key>`
+
+### 🛠️ Manual Key Recovery (First-time Setup)
+
+The first time, you must manually retrieve your key to add it to your profiles:
+
+1. On Recalbox, associate your Patreon account with the console (refer to the "Challenge" tutorial on the official Recalbox website).
+2. Retrieve the generated key from the `/recalbox/share/system/recalbox.conf` file at the `patron.privatekey` line.
+3. Add this key to the `profile_config.json` file of your profile:
+
+```json
+{
+  "patreon": {
+    "enabled": 1,
+    "privatekey": "YOUR_RECOVERED_KEY"
+  }
+}
+```
+
+Once this step is completed, the key change will be automatic upon profile selection.
 
 ---
 
@@ -462,6 +494,7 @@ Inside `share/userscripts/manual/`:
     `profiles/<profile>/favorites.json`
   - Export runs only when `favorites.enabled` is set to `1`
 
+
 ## 📊 Statistics Dashboard
 
 The `share/userscripts/manual/generate_dashboard.py` script generates an HTML dashboard from every profile's `game_time.json` file. It includes:
@@ -500,6 +533,6 @@ Open `dashboard.html` in a browser afterward. The generator does not modify prof
 - Scripts rely on `/recalbox/share/` and `/tmp/es_state.inf`  
 - The `profiles` system must be ignored by save/load scripts  
 - `current_profile.json` must exist and be valid  
-- Ensure write permissions on `share/profiles/` and `share/saves/`
+- Ensure write permissions on `share/profiles/` and `share/saves/`  
 
 License: GPLv3

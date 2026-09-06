@@ -8,7 +8,7 @@
 # Recalbox Profiles 
   
 Compatible  
-[![Recalbox](https://img.shields.io/badge/Recalbox-10.0.8-purple)](https://www.recalbox.com/fr/)  
+[![Recalbox](https://img.shields.io/badge/Recalbox-10.1-purple)](https://www.recalbox.com/fr/)  
 
 Gestion avancée des profils de sauvegarde pour Recalbox, avec sélection automatique de profil, restauration intelligente des saves, synchronisation optimisée et configuration indépendante des RetroAchievements.
 
@@ -22,7 +22,8 @@ Gestion avancée des profils de sauvegarde pour Recalbox, avec sélection automa
 Ce projet permet d’utiliser **plusieurs profils indépendants** dans Recalbox, chacun possédant :
 
 - ses propres sauvegardes (`saves/`)  
-- sa propre configuration RetroAchievements (RA)  
+- sa propre configuration RetroAchievements (RA)
+- son propre compte Patreon (clé privée)  
 - son propre état de synchronisation  
 - son propre compte RA (username/password)  
 - son propre mode RA (normal / hardcore)
@@ -161,7 +162,7 @@ Nécessite un accès en écriture à la partition système.
 - Termine RetroArch pour revenir à EmulationStation
 - Log l’événement dans `profiles.log`
 - Met à jour la gamelist (`region` ou images)
-- **Applique automatiquement la configuration RetroAchievements du profil dans `recalbox.conf`**
+- **Applique automatiquement les configurations RetroAchievements et Patreon du profil dans recalbox.conf**
 
 ---
 
@@ -258,6 +259,36 @@ global.retroachievements.password=
 - `profile_config.json` reste la source unique des paramètres RA et des options du profil
 
 NB : Les informations du compte RA sont bien appliquées même si le changement n'est pas pas visible dans le menu/option sur Recalbox (demande un reboot), cependant si nous regardons le compte RA dans le Recalbox Manager (Web), la modification est bien réalisée.
+
+---
+
+## 💎 Gestion du compte Patreon
+
+Le système permet également de gérer la clé privée Patreon par profil.
+
+### ✔ Application automatique
+
+Lorsqu’un profil est sélectionné, le script met à jour la ligne suivante dans `/recalbox/share/system/recalbox.conf` :
+`patron.privatekey=<cle>`
+
+### 🛠️ Récupération manuelle de la clé (Première installation)
+
+La première fois, vous devez récupérer votre clé manuellement pour l'ajouter à vos profils :
+
+1. Sur Recalbox, associez votre compte Patreon à la console (consultez le tuto "Challenge" sur le site officiel de Recalbox).
+2. Récupérez la clé générée dans le fichier `/recalbox/share/system/recalbox.conf` à la ligne `patron.privatekey`.
+3. Ajoutez cette clé dans le fichier `profile_config.json` de votre profil :
+
+```json
+{
+  "patreon": {
+    "enabled": 1,
+    "privatekey": "VOTRE_CLE_RECUPEREE"
+  }
+}
+```
+
+Une fois cette étape réalisée, le changement de clé sera automatique lors de la sélection du profil.
 
 ---
 
@@ -393,7 +424,7 @@ La section `favorites` de `profile_config.json` active ou désactive le suivi :
 
 **Cas 2 : Fichier `favorites.json` est vide (Guest)**
 - Tous les favoris actuels sont retirés (réinitialisation)
-- Aucun nouveau favori n'est appliqué
+- Aucun nouveau favoris n'est appliqué
 - EmulationStation redémarre
 
 #### ❌ `favorites.enabled = 0` (Inactif)
@@ -458,8 +489,7 @@ Dans `share/userscripts/manual/` :
   - Forcer une synchronisation complète  
 
 - `Favorites export(sync).py`
-  - Exporte les   
-  C'est à vous d'appliquer ces changements dans le fichier. Les outils d'édition vous permettront de faire un copier/coller ou de modifier directement le fichier.C'est à vous d'appliquer ces changements dans le fichier. Les outils d'édition vous permettront de faire un copier/coller ou de modifier directement le fichier. EmulationStation du profil actif vers
+  - Exporte les favoris EmulationStation du profil actif vers
     `profiles/<profil>/favorites.json`
   - L'export est effectué seulement lorsque `favorites.enabled` vaut `1`
 
@@ -494,7 +524,6 @@ python3 /recalbox/share/userscripts/manual/generate_dashboard.py \
 ```
 
 Ouvrir ensuite `dashboard.html` dans un navigateur. Le générateur ne modifie pas les statistiques ni la configuration des profils.
-
 
 ---
 

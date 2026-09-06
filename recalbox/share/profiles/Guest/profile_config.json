@@ -10,5 +10,9 @@
     "global.retroachievements.hardcore=": "0",
     "global.retroachievements.username=": "",
     "global.retroachievements.password=": ""
+  },
+  "patreon": {
+    "enabled": 0,
+    "privatekey": ""
   }
 }

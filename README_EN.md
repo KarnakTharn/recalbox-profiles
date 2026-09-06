@@ -5,6 +5,9 @@
 ![GitHub issues](https://img.shields.io/github/issues/KarnakTharn/recalbox-profiles)
 ![GitHub stars](https://img.shields.io/github/stars/KarnakTharn/recalbox-profiles)
 
+<!--Langue-->
+<a href="README.md"><img src="https://cdn.jsdelivr.net/gh/lipis/flag-icons@6.6.6/flags/4x3/fr.svg" alt="FR" width="24"> **Français**</a> · <img src="https://cdn.jsdelivr.net/gh/lipis/flag-icons@6.6.6/flags/4x3/gb.svg" alt="GB" width="24"> **English**
+
 # Recalbox Profiles 
   
 Compatible  
@@ -49,7 +52,7 @@ recalbox/
       Guest/
         profile_config.json
         screenshots/
-        roms/
+        saves/
           megadrive/
             Aladdin.state
 
@@ -57,7 +60,7 @@ recalbox/
       Profil1/
         profile_config.json
         screenshots/
-        roms/
+        saves/
           gba/
             Breath of Fire.srm
 
@@ -159,6 +162,7 @@ Requires write access to the system partition.
 - Detects when a ROM from the `profiles` system is launched  
 - Extracts the profile name  
 - Updates `current_profile.json`  
+- Updates `profiles-fr.txt` and `profiles-en.txt` with the active profile name, in the theme defined by `current_theme.json`
 - Manages screenshots: backs up current profile's captures, clears global folder, and loads new profile's captures  
 - Terminates RetroArch to return to EmulationStation  
 - Logs the profile switch  
@@ -200,9 +204,10 @@ Requires write access to the system partition.
 
 These independent scripts track play time regardless of which save-loading event the user chooses.
 
-- `game_stats[rungame].py` creates a temporary session in `current_profile.json` and increments `playcount`.
-- `game_stats[endgame].py` calculates the session duration, adds it to `timeplayed`, updates `lastplayed`, then removes the temporary session.
-- The `profiles` system is ignored, and repeated events are not counted twice.
+- `game_stats[rungame].py` creates a temporary session in `current_profile.json`.
+- `game_stats[endgame].py` calculates the session duration. If it is **5 minutes or more**, it is added to `timeplayed` and the `playcount` is incremented.
+- The `profiles` and `imageviewer` systems are ignored.
+- Repeated events are not counted twice.
 
 ---
 

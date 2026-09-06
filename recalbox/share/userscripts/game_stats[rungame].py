@@ -91,8 +91,8 @@ def main():
     game_path = state.get("GamePath", "")
     game_name = get_game_name(game_path)
 
-    # Le système profiles est uniquement un sélecteur de profil.
-    if system_id == "profiles" or not system_id or not game_name:
+    # Le système profiles et imageviewer sont ignorés.
+    if system_id in ("profiles", "imageviewer") or not system_id or not game_name:
         return
 
     current_profile = read_json(CURRENT_PROFILE_FILE, {})
@@ -125,7 +125,7 @@ def main():
             "lastplayed": lastplayed,
         },
     )
-    game_stats["playcount"] = int(game_stats.get("playcount", 0)) + 1
+    game_stats.setdefault("playcount", 0)
     game_stats.setdefault("timeplayed", 0)
     game_stats["lastplayed"] = lastplayed
 

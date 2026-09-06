@@ -41,6 +41,9 @@ REGION_OTHER = "eu"
 # Fichier de configuration de Recalbox
 RECALBOX_CONF = "/recalbox/share/system/recalbox.conf"
 
+# Fichier du thème courant
+CURRENT_THEME_FILE = "/recalbox/share/profiles/current_theme.json"
+
 
 def read_state_file():
     """
@@ -180,6 +183,44 @@ def update_current_profile(profile_name):
     except Exception as e:
         LOGGER.error("Erreur lors de la mise à jour du profil: %s", e)
         return False
+
+
+def update_profile_descriptions(profile_name):
+    """Met à jour le profil affiché dans les descriptions française et anglaise."""
+    try:
+        with open(CURRENT_THEME_FILE, encoding="utf-8") as file:
+            theme_path = json.load(file).get("path")
+    except (OSError, json.JSONDecodeError) as e:
+        LOGGER.error("Erreur lors de la lecture du thème courant: %s", e)
+        return False
+
+    if not theme_path:
+        LOGGER.error("Le chemin du thème courant est absent de %s", CURRENT_THEME_FILE)
+        return False
+
+    descriptions = {
+        os.path.join(theme_path, "data", "txt", "profiles-fr.txt"): (
+            "**Gestionnaire de profil**\n\n"
+            "__**Profil en cours**__\n"
+            f"{profile_name}\n\n"
+        ),
+        os.path.join(theme_path, "data", "txt", "profiles-en.txt"): (
+            "**Profile Manager**\n\n"
+            "__**Current profile**__\n"
+            f"{profile_name}\n\n"
+        ),
+    }
+
+    for file_path, content in descriptions.items():
+        try:
+            with open(file_path, "w", encoding="utf-8") as file:
+                file.write(content)
+        except OSError as e:
+            LOGGER.error("Erreur lors de la mise à jour de %s: %s", file_path, e)
+            return False
+
+    LOGGER.info("Descriptions des profils mises à jour pour : %s", profile_name)
+    return True
 
 
 def find_retroarch_pid():
@@ -460,6 +501,7 @@ def apply_favorites_settings(profile_name):
 
     # Redémarrer EmulationStation
     try:
+        time.sleep(2)  # Attendre un peu pour s'assurer que les changements sont pris en compte
         subprocess.run(["es", "restart"], timeout=30)
         LOGGER.info("EmulationStation redémarré avec succès")
     except Exception as e:
@@ -500,6 +542,7 @@ def main():
     # Mettre à jour le profil courant
     if update_current_profile(profile_name):
         LOGGER.info("Profil changé en: %s", profile_name)
+        update_profile_descriptions(profile_name)
 
     # Charger les screenshots du nouveau profil
     load_screenshots(profile_name)

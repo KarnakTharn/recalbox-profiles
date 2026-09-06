@@ -10,7 +10,7 @@ import os
 import sys
 import json
 import shutil
-from pathlib import Path
+from datetime import datetime
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from others.recalbox_logging import get_logger
@@ -147,13 +147,13 @@ def find_save_files(system_id, game_name):
     return save_files
 
 
-def copy_save_file(source_path, profile_name, system_id, game_name):
+def copy_save_file(source_path, profile_name, system_id):
     """
     Copie un fichier de save vers le dossier du profil.
     Crée les répertoires s'il le faut.
     """
     # Créer le répertoire cible s'il n'existe pas
-    target_dir = os.path.join(PROFILES_DIR, profile_name, "roms", system_id)
+    target_dir = os.path.join(PROFILES_DIR, profile_name, "saves", system_id)
     os.makedirs(target_dir, exist_ok=True)
 
     # Récupérer le nom du fichier avec son extension
@@ -223,7 +223,7 @@ def main():
 
         # Vérifier si le fichier a été modifié
         if file_modified_after(save_file, last_sync):
-            if copy_save_file(save_file, profile_name, system_id, game_name):
+            if copy_save_file(save_file, profile_name, system_id):
                 # Mettre à jour le manifest avec le nouveau timestamp
                 manifest[manifest_key] = current_time
 
@@ -231,7 +231,7 @@ def main():
     save_sync_manifest(manifest)
 
     # Logger l'événement de fin du jeu
-    log_event(profile_name, system_id, "GameEnd", game_name)
+    LOGGER.info("Fin du jeu enregistrée pour %s dans le profil %s", game_name, profile_name)
 
 
 if __name__ == "__main__":

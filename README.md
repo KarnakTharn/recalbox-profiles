@@ -5,6 +5,9 @@
 ![GitHub issues](https://img.shields.io/github/issues/KarnakTharn/recalbox-profiles)
 ![GitHub stars](https://img.shields.io/github/stars/KarnakTharn/recalbox-profiles)
 
+<!--Langue-->
+<img src="https://cdn.jsdelivr.net/gh/lipis/flag-icons@6.6.6/flags/4x3/fr.svg" alt="FR" width="24"> **Français** · <a href="README_EN.md"><img src="https://cdn.jsdelivr.net/gh/lipis/flag-icons@6.6.6/flags/4x3/gb.svg" alt="GB" width="24"> **English**</a>
+
 # Recalbox Profiles 
   
 Compatible  
@@ -48,7 +51,7 @@ recalbox/
       Guest/
         profile_config.json
         screenshots/
-        roms/
+        saves/
           megadrive/
             Aladdin.state
 
@@ -56,7 +59,7 @@ recalbox/
       Profil1/
         profile_config.json
         screenshots/
-        roms/
+        saves/
           gba/
             Breath of Fire.srm
 
@@ -158,6 +161,7 @@ Nécessite un accès en écriture à la partition système.
 - Détecte le lancement d’une ROM du système `profiles`
 - Extrait le nom du profil
 - Met à jour `current_profile.json`
+- Met à jour `profiles-fr.txt` et `profiles-en.txt` avec le nom du profil actif, dans le thème défini par `current_theme.json`
 - Gère les captures d'écran : sauvegarde les screenshots du profil actuel, vide le dossier global, et charge ceux du nouveau profil
 - Termine RetroArch pour revenir à EmulationStation
 - Log l’événement dans `profiles.log`
@@ -199,9 +203,10 @@ Nécessite un accès en écriture à la partition système.
 
 Ces scripts indépendants suivent le temps de jeu, quel que soit l’événement choisi par l’utilisateur pour charger les sauvegardes.
 
-- `game_stats[rungame].py` crée une session temporaire dans `current_profile.json` et incrémente `playcount`.
-- `game_stats[endgame].py` calcule la durée de la session, l’ajoute à `timeplayed`, met à jour `lastplayed`, puis supprime la session temporaire.
-- Le système `profiles` est ignoré et les événements répétés ne sont pas comptés deux fois.
+- `game_stats[rungame].py` crée une session temporaire dans `current_profile.json`.
+- `game_stats[endgame].py` calcule la durée de la session. Si elle est **supérieure ou égale à 5 minutes**, elle est ajoutée à `timeplayed` et le `playcount` est incrémenté.
+- Les systèmes `profiles` et `imageviewer` sont ignorés.
+- Les événements répétés ne sont pas comptés deux fois.
 
 ---
 

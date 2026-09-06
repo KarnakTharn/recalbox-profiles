@@ -1,6 +1,14 @@
 # Changelog
 
-Toutes les modifications importantes du projet sont documentées ici.
+## [2.5.1] - 2026-09-06
+
+### Modification
+- Architecture : modification du chemin des sauvegardes par profil de `profiles/<profile>/roms/` vers `profiles/<profile>/saves/` pour plus de cohérence avec Recalbox.
+- Statistiques : ajout d'un seuil minimal de 5 minutes pour comptabiliser le temps de jeu (`timeplayed`) et le nombre de lancements (`playcount`).
+- Statistiques : exclusion des systèmes `profiles` et `imageviewer` du suivi.
+- Correction de bugs : résolution d'erreurs d'imports et de fonctions non définies dans `save_profile[endgame].py`.
+- Sauvegardes : suppression des fichiers résiduels d'un jeu lors du changement de profil, notamment les sauvegardes d'état numérotées (`game.state1`, `game.state1.jpg`).
+- Thème : mise à jour des descriptions française et anglaise avec le nom du profil actif lors d'un changement de profil, selon le chemin défini dans `current_theme.json`.
 
 ## [2.5.0] - 2026-09-06
 

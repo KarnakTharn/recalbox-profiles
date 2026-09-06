@@ -79,12 +79,12 @@ def get_game_name_from_path(game_path):
 def find_save_files(profile_name, system_id, game_name):
     """
     Cherche les saves du profil pour ce jeu :
-    /recalbox/share/profiles/<profil>/roms/<system>/<jeu>.*
+    /recalbox/share/profiles/<profil>/saves/<system>/<jeu>.*
 
     Retourne une liste de fichiers trouvés.
     """
     save_files = []
-    profile_game_dir = os.path.join(PROFILES_DIR, profile_name, "roms", system_id)
+    profile_game_dir = os.path.join(PROFILES_DIR, profile_name, "saves", system_id)
 
     if not os.path.isdir(profile_game_dir):
         return save_files
@@ -142,22 +142,25 @@ def restore_save_file(profile_save_path, system_id):
         return False
 
 
-def delete_existing_saves(system_id, game_name):
+def cleanup_extra_saves(system_id, game_name, profile_save_files):
     """
-    Supprime les saves actuelles dans /share/saves/<system>/,
-    uniquement celles correspondant à ce jeu.
+    Supprime les saves dans /share/saves/<system>/ qui ne font pas partie
+    de la liste des saves du profil actuel.
     """
     target_dir = os.path.join(SHARES_SAVES_DIR, system_id)
 
     if not os.path.isdir(target_dir):
         return
 
+    # Noms de fichiers attendus pour le profil actuel
+    expected_filenames = {os.path.basename(f) for f in profile_save_files}
+
     for filename in os.listdir(target_dir):
-        if filename.startswith(game_name + "."):
+        if filename.startswith(game_name + ".") and filename not in expected_filenames:
             file_path = os.path.join(target_dir, filename)
             try:
                 os.remove(file_path)
-                LOGGER.debug("Save supprimée (profil sans save) : %s", filename)
+                LOGGER.debug("Save résiduelle supprimée : %s", filename)
             except Exception as e:
                 LOGGER.error("Erreur lors de la suppression de %s: %s", filename, e)
 
@@ -193,11 +196,10 @@ def main():
     # Récupère les saves du profil
     save_files = find_save_files(profile_name, system_id, game_name)
 
-    if not save_files:
-        # Aucun fichier → suppression des saves globales
-        LOGGER.info("Aucune save dans le profil → suppression des saves actuelles")
-        delete_existing_saves(system_id, game_name)
-    else:
+    # Supprime les saves qui n'appartiennent pas au profil actuel
+    cleanup_extra_saves(system_id, game_name, save_files)
+
+    if save_files:
         # Copie des saves du profil vers /share/saves
         LOGGER.info(
             "Restauration des saves pour %s (%s) depuis profil %s",
@@ -207,6 +209,8 @@ def main():
         )
         for save_file in save_files:
             restore_save_file(save_file, system_id)
+    else:
+        LOGGER.info("Aucune save dans le profil pour %s", game_name)
 
 
 if __name__ == "__main__":

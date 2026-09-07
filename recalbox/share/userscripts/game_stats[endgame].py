@@ -83,7 +83,21 @@ def main():
         LOGGER.warning("Session de jeu incomplète : statistiques non mises à jour")
         return
 
+    # Ignorer les systèmes de gestion interne et les captures d'écran
+    if system_id in ("profiles", "imageviewer"):
+        current_profile.pop("active_game", None)
+        write_json_atomic(CURRENT_PROFILE_FILE, current_profile)
+        return
+
     elapsed_seconds = max(0, int(time.time() - started_at))
+
+    # Ne pas comptabiliser les sessions de moins de 5 minutes
+    if elapsed_seconds < 300:
+        LOGGER.debug("Session trop courte (%s s), non comptabilisée", elapsed_seconds)
+        current_profile.pop("active_game", None)
+        write_json_atomic(CURRENT_PROFILE_FILE, current_profile)
+        return
+
     lastplayed = datetime.now().strftime("%Y%m%dT%H%M%S")
     stats_path = os.path.join(PROFILES_DIR, profile_name, STATS_FILE_NAME)
     stats = read_json(stats_path, {})
@@ -96,7 +110,7 @@ def main():
         },
     )
     game_stats["timeplayed"] = int(game_stats.get("timeplayed", 0)) + elapsed_seconds
-    game_stats.setdefault("playcount", 0)
+    game_stats["playcount"] = int(game_stats.get("playcount", 0)) + 1
     game_stats["lastplayed"] = lastplayed
 
     if not write_json_atomic(stats_path, stats):

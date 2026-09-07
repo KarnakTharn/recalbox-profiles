@@ -1,6 +1,6 @@
 # Changelog
 
-## [2.5.1] - 2026-09-06
+## [2.5.1] - 2026-09-07
 
 ### Modification
 - Architecture : modification du chemin des sauvegardes par profil de `profiles/<profile>/roms/` vers `profiles/<profile>/saves/` pour plus de cohérence avec Recalbox.
